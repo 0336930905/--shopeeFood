@@ -1,0 +1,224 @@
+<%- include('../partials/ql_trangdau') %>
+
+<body>
+  <div class="container">
+    <div class="row">
+          <h1 class="mt-4">Quản lý lịch làm</h1>
+             <div class="col">
+              <div class="mt-4">
+                <h2 class="mb-4">Tạo khoảng thời gian làm </h2>
+                <form class="sapxepForm" method="POST" action="/quanly/sapxepvieclam/taomoi">
+                  <div class="form-group">
+                    <label for="ngayBD">Ngày bắt đầu:</label>
+                    <input type="date" id="ngayBD" name="ngayBD" class="" >
+                  </div>
+                  <div class="form-group">
+                    <label for="ngayKT">Ngày kết thúc:</label>
+                    <input type="date" id="ngayKT" name="ngayKT" class="" >
+                  </div>
+                  <button type="submit" class="btn-bt">Đăng ký</button>
+                </form>
+             </div>
+              </div>
+             <div class="col chuyendoi">
+                  <div class="mt-4">
+                    <h2 class="mb-4"> khoản thời gian làm</h2>
+                    <div class="form-group">
+                      <% ngayList.forEach(function(ngay) { %>
+                        <div>
+                          <div style="display: flex;">
+                           <p>Từ ngày: <%= new Date(ngay.NGAY_BD).toLocaleDateString('vi-VN') %> Đến ngày: <%= new Date(ngay.NGAY_KT).toLocaleDateString('vi-VN') %> &nbsp;</p>
+                          <form method="POST" action="/quanly/sapxepvieclam/xoa-ngay">
+                            <input type="hidden" name="ngayId" value="<%= ngay.ID_N %>">
+                                <button type="submit" class="btn-xoa">Xóa</button>
+                          </form>
+                          </div>
+                        </div>
+                      <% }); %>
+                  </div>
+                  </div>
+        </div>
+        <h1 class="mt-4 ml-2">Danh sách Gợi ý lịch làm của nhân viên</h1>
+        <% ngayList.forEach(function(ngay) { %>
+          <form id="sapxepForm_<%= ngay.ID_N %>" action="/quanly/sapxepvieclam" method="post">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Ngày</th>
+                  <% 
+                  var counter = 1; // Biến đếm bắt đầu từ 1
+                  for (var date = new Date(ngay.NGAY_BD); date <= new Date(ngay.NGAY_KT); date.setDate(date.getDate() + 1)) {
+                      var valueDate = new Date(date);
+                      valueDate.setDate(valueDate.getDate() + 1); // công 2 ngày
+                  %>
+                    <th>
+                      <%= date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }) %>
+                      <input type="hidden" name="ngay<%= counter %>" value="<%= valueDate.toISOString().split('T')[0] %>">
+                    </th>
+                    <% counter++; %>
+                  <% } %>
+                  
+                </tr>
+              </thead>
+              <tbody>
+                <% ['Ca 1', 'Ca 2', 'Ca 3'].forEach(function(ca, index) { %>
+                  <tr>
+                    <td><%= ca %>:</td>
+                    <% 
+                    counter = 1; // Biến đếm bắt đầu từ 1
+                    for (var date = new Date(ngay.NGAY_BD); date <= new Date(ngay.NGAY_KT); date.setDate(date.getDate() + 1)) { 
+                    %>
+                      <td>
+                        <select name="ca<%= index + 1 %>_N<%= counter %>" class="form-control" >
+                          <option value="">Chọn nhân viên</option>
+                          <% dangKyNgayLamList.forEach(function(dangKy) { 
+                              var ngayDKProperty = 'NGAYDK_' + counter; // Tạo tên thuộc tính động
+                              if (dangKy[ngayDKProperty] && dangKy[ngayDKProperty].includes(ca) && dangKy.ID_N == ngay.ID_N && counter <= 7) { %>
+                                <option value="<%= dangKy.ID_NV %>">
+                                  <%= dangKy.HOTEN_NV %> 
+                                </option>
+                            <% } %>
+                          <% }); %>
+                        </select>
+                      </td>
+                      <% counter++; %>
+                    <% } %>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+            <input type="hidden" name="id_n" value="<%= ngay.ID_N %>">
+            <input type="hidden" name="ngayBD" value="<%= ngay.NGAY_BD.toISOString().split('T')[0] %>">
+            <input type="hidden" name="ngayKT" value="<%= ngay.NGAY_KT.toISOString().split('T')[0] %>">
+            <button type="submit" class="btn-bt">Xác nhận</button>
+          </form>
+          <% }); %>
+        <div class="col">
+          <h1 class="mt-4 ml-2">Lịch làm đã sắp</h1>
+          <% lichLamList.forEach(function(lichlam) { %>
+            <div class="col">
+              <tr>
+                <td>
+                  <input type="text" name="ngay_l" value="<%= new Date(lichlam.NGAY_L).toLocaleDateString('vi-VN') %>" readonly style="width: 120px;">
+                </td>
+                <td>
+                  <input type="text" name="ca_1_<%= lichlam.ID_LL %>" value="<%= lichlam.TEN_NV_CA_1 ? lichlam.TEN_NV_CA_1 : 'Chưa phân công' %>" readonly style="width: 150px;">
+                </td>
+                <td>
+                  <input type="text" name="ca_2_<%= lichlam.ID_LL %>" value="<%= lichlam.TEN_NV_CA_2 ? lichlam.TEN_NV_CA_2 : 'Chưa phân công' %>" readonly style="width: 150px;">
+                </td>
+                <td>
+                  <input type="text" name="ca_3_<%= lichlam.ID_LL %>" value="<%= lichlam.TEN_NV_CA_3 ? lichlam.TEN_NV_CA_3 : 'Chưa phân công' %>" readonly style="width: 150px;">
+                </td> 
+              </tr>
+            </div>
+          <% }); %>
+
+        </div>
+        <div class="col">
+          <h1 class="mt-4 ml-2">Lịch làm có thể cập nhật</h1>
+          <% 
+          // Lấy ngày hiện tại cộng thêm 1 ngày
+          const tomorrow = new Date();
+          tomorrow.setDate(tomorrow.getDate() + (-1));
+          // Lọc danh sách lịch làm có ngày lớn hơn ngày hiện tại 1 ngày
+          const filteredLichLamList = lichLamList.filter(function(lichlam) {
+            return new Date(lichlam.NGAY_L) > tomorrow;
+          });
+        %>
+        <% if (filteredLichLamList.length > 0) { %>
+          <form action="/quanly/sapxepvieclam/capnhatlichlam" method="POST">
+            <% filteredLichLamList.forEach(function(lichlam) { %>
+              <div class="col">
+                <tr>
+                  <td>
+                    <input type="text" name="ngay_l" value="<%= new Date(lichlam.NGAY_L).toLocaleDateString('vi-VN') %>" readonly style="width: 120px;">
+                  </td>
+                  <td>
+                    <select name="ca_1_<%= lichlam.ID_LL %>" style="width: 150px;">
+                      <option value="">Chưa phân công</option>
+                      <% nhanVienList.forEach(function(nv) { %>
+                        <option value="<%= nv.ID_NV %>" <%= nv.ID_NV === lichlam.CA_1 ? 'selected' : '' %>><%= nv.HOTEN_NV %></option>
+                      <% }); %>
+                    </select>
+                  </td>
+                  <td>
+                    <select name="ca_2_<%= lichlam.ID_LL %>" style="width: 150px;">
+                      <option value="">Chưa phân công</option>
+                      <% nhanVienList.forEach(function(nv) { %>
+                        <option value="<%= nv.ID_NV %>" <%= nv.ID_NV === lichlam.CA_2 ? 'selected' : '' %>><%= nv.HOTEN_NV %></option>
+                      <% }); %>
+                    </select>
+                  </td>
+                  <td>
+                    <select name="ca_3_<%= lichlam.ID_LL %>" style="width: 150px;">
+                      <option value="">Chưa phân công</option>
+                      <% nhanVienList.forEach(function(nv) { %>
+                        <option value="<%= nv.ID_NV %>" <%= nv.ID_NV === lichlam.CA_3 ? 'selected' : '' %>><%= nv.HOTEN_NV %></option>
+                      <% }); %>
+                    </select>
+                  </td>
+                </tr>
+              </div>
+            <% }); %>
+            <button type="submit" class="btn-bt">Cập nhật lịch làm</button>
+          </form>
+        <% } else { %>
+          <p>Không có lịch làm nào sau ngày hiện tại 1 ngày.</p>
+        <% } %>
+        </div>
+      </div>
+  </div>
+</body>
+    
+  
+
+<script>
+  window.onload = function() {
+    // Lấy ngày hiện tại
+    const today = new Date();
+    // Định dạng ngày hiện tại theo chuẩn YYYY-MM-DD
+    const formattedToday = today.toISOString().split('T')[0];
+    // Đặt giá trị mặc định cho input ngày bắt đầu là ngày hiện tại
+    document.getElementById('ngayBD').value = formattedToday;
+  }
+  document.querySelector('.sapxepForm').addEventListener('submit', function(event) {
+    const ngayBD = new Date(document.getElementById('ngayBD').value);
+    const ngayKT = new Date(document.getElementById('ngayKT').value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (ngayBD < today) {
+      alert('Ngày bắt đầu không được nhỏ hơn ngày hiện tại.');
+      event.preventDefault();
+      return;
+    }
+
+    const maxEndDate = new Date(ngayBD);
+    maxEndDate.setDate(maxEndDate.getDate() + 6);
+
+    if (ngayKT > maxEndDate) {
+      alert('Ngày kết thúc không được vượt quá 7 ngày kể từ ngày bắt đầu.');
+      event.preventDefault();
+      return;
+    }
+
+    const selects = document.querySelectorAll('.sapxepForm select');
+    let allFilled = true;
+
+    selects.forEach(select => {
+      if (!select.value) {
+        allFilled = false;
+        select.classList.add('is-invalid');
+      } else {
+        select.classList.remove('is-invalid');
+      }
+    });
+
+    if (!allFilled) {
+      alert('Vui lòng chọn nhân viên cho tất cả các ca làm việc.');
+      event.preventDefault();
+    }
+  });
+</script>
+
+<%- include('../partials/ql_trangcuoi') %>

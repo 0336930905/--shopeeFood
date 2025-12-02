@@ -1,0 +1,342 @@
+<%- include('../partials/nv_trangdau') %>
+  <div class="container">
+    <div class="row">
+      <body>
+        <div class="col-md-8">
+          <% if (typeof successMessage !== 'undefined') { %>
+            <div class="alert alert-success">
+              <%= successMessage %>
+            </div>
+          <% } %>
+          <h2 class="mt-4">Danh sách sản phẩm</h2>
+          <% categories.forEach(dm=> { %>
+            <div class="row">
+              <% if (dm.ID_DM != 14) { %>
+              <div class="col-12">
+                <h4 class=" text-white p-2">
+                    <%= dm.TEN_DM %>
+                </h4>
+              </div>
+              <% } %>
+              <% products.forEach(sp=> { %>
+                <% if (sp.ID_DM===dm.ID_DM && dm.ID_DM != 14 ) { %>
+                  <div class="col-12 col-md-4 product-item mb-4" data-name="<%= sp.TEN_SP %>"
+                    data-price="<%= sp.GIA_SP %>" data-category="<%= dm.TEN_DM %>">
+                    <div class="card h-100">
+                      <div class="product-status" id="status_<%= sp.ID_SP %>">
+                        <%= sp.TRANGTHAI_SP %> (<%= lyMap[sp.ID_SP] %> ly)
+                      </div>
+                      <img src="/uploads/<%= sp.ANH_SP %>" class="card-img-top" alt="<%= sp.TEN_SP %>">
+                      <div class="card-body">
+                        <h5 class="card-title" id="ten_san_pham_<%= sp.ID_SP %>">
+                          <%= sp.TEN_SP %>
+                        </h5>
+                        <% function formatCurrency(amount) { return new Intl.NumberFormat('vi-VN', { style: 'decimal' ,
+                          currency: 'VND' }).format(amount); } %>
+                          <span class="card-text" id="gia_<%= sp.ID_SP %>" data-gia-ban-dau="<%= sp.GIA_SP %>">
+                            Giá: <%= formatCurrency(sp.GIA_SP) %> VNĐ
+                          </span>
+                          <form action="/nhanvien/addToCart" method="POST" style="margin-bottom: 10px;">
+                            <div class="mb-3">
+                              <label for="soluong_<%= sp.ID_SP %>">Số lượng:</label>
+                              <input type="number" id="soluong_<%= sp.ID_SP %>" name="soluong" value="1" min="1"
+                                max="10">
+                            </div>
+                            <div class="radio-wrapper">
+                              <% sizes.forEach(kt=> { %>
+                                <input class="kichthuoc-radio-buttons"
+                                  id="kichthuoc_<%= sp.ID_SP %>_<%= kt.ID_KICH_THUOC %>" value="<%= kt.ID_KICH_THUOC %>"
+                                  name="kichthuoc_<%= sp.ID_SP %>" type="radio" data-size="<%= kt.TEN_KICH_THUOC %>" />
+                                <label class="kichthuoc-label kt_<%= kt.ID_KICH_THUOC %>"
+                                  for="kichthuoc_<%= sp.ID_SP %>_<%= kt.ID_KICH_THUOC %>">
+                                  <%= kt.TEN_KICH_THUOC %>
+                                </label>
+                                <% }); %>
+                            </div>
+
+                            <!-- Trường ẩn để lưu kích thước đã chọn -->
+                            <input type="hidden" id="kichthuoc_selected_<%= sp.ID_SP %>" name="kichthuoc" value="">
+
+                            <% if (sp.TRANGTHAI_SP==='Còn' ) { %>
+                              <button type="submit" class="btn-bt">Thêm vào giỏ hàng</button>
+                              <% } else { %>
+                                <button disabled class="btn-xoa">Hết</button>
+                                <% } %>
+                                  <input type="hidden" name="sp_id" value="<%= sp.ID_SP %>">
+                                  <input type="hidden" name="gia_uoctinh" data-id="<%= sp.ID_SP %>"
+                                    value="<%= sp.GIA_SP %>">
+                          </form>
+                      </div>
+                    </div>
+                  </div>
+                  <% } %>
+                    <% }); %>
+                    <% if (dm.ID_DM === 14) { %>
+                      <div class="col-12">
+                        <h4 class=" text-white p-2">
+                            <%= dm.TEN_DM %>
+                        </h4>
+                      </div>
+                      <% products.forEach(sp=> { %>
+                        <% if (sp.ID_DM===dm.ID_DM && dm.ID_DM === 14 ) { %>
+                          <div id="monthem" class="col-12 col-md-4 product-item mb-4" data-name="<%= sp.TEN_SP %>"
+                            data-price="<%= sp.GIA_SP %>" data-category="<%= dm.TEN_DM %>">
+                            <div class="card h-100">
+                              <div class="product-status" id="status_<%= sp.ID_SP %>">
+                                <%= sp.TRANGTHAI_SP %> (<%= lyMap[sp.ID_SP] %> ly)
+                              </div>
+                              <img src="/uploads/<%= sp.ANH_SP %>" class="card-img-top" alt="<%= sp.TEN_SP %>">
+                              <div class="card-body">
+                                <h5 class="card-title" id="ten_san_pham_<%= sp.ID_SP %>">
+                                  <%= sp.TEN_SP %>
+                                </h5>
+                                <% function formatCurrency(amount) { return new Intl.NumberFormat('vi-VN', { style: 'decimal' ,
+                                  currency: 'VND' }).format(amount); } %>
+                                  <span class="card-text" id="gia_<%= sp.ID_SP %>" data-gia-ban-dau="<%= sp.GIA_SP %>">
+                                    Giá: <%= formatCurrency(sp.GIA_SP) %> VNĐ
+                                  </span>
+                                  <form action="/nhanvien/addToCart" method="POST" style="margin-bottom: 10px;">
+                                    <div class="mb-3">
+                                      <label for="soluong_<%= sp.ID_SP %>">Số lượng:</label>
+                                      <input type="number" id="soluong_<%= sp.ID_SP %>" name="soluong" value="1" min="1"
+                                        max="10">
+                                    </div>
+                                    <!-- Trường ẩn để lưu kích thước đã chọn -->
+                                    <input type="hidden" id="kichthuoc_selected_<%= sp.ID_SP %>" name="kichthuoc" value="2">
+                                    <% if (sp.TRANGTHAI_SP==='Còn' ) { %>
+                                      <button type="submit" class="btn-bt">Thêm vào giỏ hàng</button>
+                                      <% } else { %>
+                                        <button disabled class="btn-xoa">Hết</button>
+                                        <% } %>
+                                          <input type="hidden" name="sp_id" value="<%= sp.ID_SP %>">
+                                          <input type="hidden" name="gia_uoctinh" data-id="<%= sp.ID_SP %>"
+                                            value="<%= sp.GIA_SP %>">
+                                  </form>
+                              </div>
+                            </div>
+                          </div>
+                          <% } %>
+                            <% }); %>
+                      <% } %>
+            </div>
+            <% }) %>
+        </div>
+        
+
+        <div class="col-md-4">
+          <div id="cart-sidebar" class="card fixed-sidebar">
+            <div class="card-body">
+              <h2 class="">Giỏ hàng của bạn</h2>
+              <% if (cart.length> 0) { %>
+                <% let tongGiaTriGioHang=0; cart.forEach(item=> {
+                  tongGiaTriGioHang += item.SOLUONG * item.GIA_UOCTINH;
+                  });
+                  %>
+                  <div class="cart-items">
+                    <% cart.forEach(item=> { %>
+                      <div class="card">
+                        <div class="row g-0">
+                          <div class="col-md-4">
+                            <img src="/uploads/<%= item.ANH_SP %>" class="img-fluid rounded-start"
+                              alt="<%= item.TEN_SP %>">
+                          </div>
+                          <div class="col-md-8">
+                            <div class="card-body">
+                              <h5 class="">
+                                <%= item.TEN_SP %>
+                              </h5>
+                              <% function formatCurrency(amount) { return new Intl.NumberFormat('vi-VN', {
+                                style: 'decimal' , currency: 'VND' }).format(amount); } %>
+                                <p class="">Giá: <%= formatCurrency(item.GIA_UOCTINH) %> VND</p>
+                                <p class="card-text">Số lượng: 
+                                  <form action="/nhanvien/datnuoc/<%= item.ID_GHNV %>" method="POST" class="form-quantity">
+                                    <button type="button" class="btn-quantity" onclick="updateQuantity(this, -1)">-</button>
+                                    <input type="number" name="SOLUONG" value="<%= item.SOLUONG %>" min="1" readonly>
+                                    <button type="button" class="btn-quantity" onclick="updateQuantity(this, 1)">+</button>
+                                    <input type="hidden" name="_method" value="PUT">
+                                  </form>
+                                </p>
+                                <p class="card-text">
+                                  Ghi chú:
+                                  <textarea name="ghichu_<%= item.ID_GHNV %>" class="ghichu" rows="2" cols="30" placeholder="Thêm ghi chú "></textarea>
+                                </p>
+                                <p class="">Kích thước: <%= item.TEN_KICH_THUOC %>
+                                </p>
+                                <form action="/nhanvien/xoa_giohang/<%= item.ID_GHNV %>" method="POST">
+                                  <button type="submit" class="btn-xoa">Xóa</button>
+                                </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <% }); %>
+                  </div>
+                  <hr>
+                  <h2>Món thêm</h2>
+                  <div class="cart-items">
+                    <% cart.forEach(item=> { %>
+                      <% if (item.ID_DM == 14 ) { %>
+                        <div class="card">
+                          <div class="row g-0">
+                            <div class="col-md-4">
+                              <img src="/uploads/<%= item.ANH_SP %>" class="img-fluid rounded-start"
+                                alt="<%= item.TEN_SP %>">
+                            </div>
+                            <div class="col-md-8">
+                              <div class="card-body">
+                                <h5 class="card-title">
+                                  <%= item.TEN_SP %>
+                                </h5>
+                                <% function formatCurrency(amount) { return new Intl.NumberFormat('vi-VN', {
+                                  style: 'decimal' , currency: 'VND' }).format(amount); } %>
+                                  <p class="card-text">Giá: <%= formatCurrency(item.GIA_UOCTINH) %> VNĐ</p>
+                                  <p class="card-text">Số lượng: 
+                                    <form action="/khachhang/capnhat_giohang/<%= item.ID_GH %>" method="POST" class="form-quantity">
+                                      <button type="button" class="btn-quantity" onclick="updateQuantity(this, -1)">-</button>
+                                      <input type="number" name="SOLUONG" value="<%= item.SOLUONG %>" min="1" readonly>
+                                      <button type="button" class="btn-quantity" onclick="updateQuantity(this, 1)">+</button>
+                                      <input type="hidden" name="_method" value="PUT">
+                                    </form>
+                                  </p>
+                                  </p>
+                                  </p>
+                                  <form action="/khachhang/xoa_giohang/<%= item.ID_GH %>" method="POST">
+                                    <button type="submit" class="btn-xoa">Xóa</button>
+                                  </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <% }%> %>
+
+                      <% }); %>
+                  </div>
+                  <div class="cart-summary mt-3">
+                    <p><strong>Tổng giá: <%= tongGiaTriGioHang.toLocaleString('vi-VN') %> VNĐ</strong></p>
+                    <a href="#monthem">Thêm món</a>
+                    <form id="nvformTructiep" action="/nhanvien/thanhtoan" method="POST">
+                      <button type="submit" class="btn-bt">Xác nhận</button>
+                    </form>
+                  </div>
+                  <% } else { %>
+                    <p>Giỏ hàng của bạn đang trống.</p>
+                    <% } %>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  <% function formatCurrency(value) { %>
+    <%= value.toLocaleString('vi-VN') %>
+      <% } %>
+
+        </body>
+        <script>
+          function updateQuantity(button, delta) {
+    const form = button.closest('.form-quantity');
+    const quantityInput = form.querySelector('input[name="SOLUONG"]');
+    let currentQuantity = parseInt(quantityInput.value);
+
+    // Cập nhật số lượng mới
+    currentQuantity += delta;
+
+    // Đảm bảo số lượng không nhỏ hơn 1
+    if (currentQuantity < 1) {
+      currentQuantity = 1;
+    }
+
+    // Cập nhật giá trị mới vào ô input
+    quantityInput.value = currentQuantity;
+
+    // Gửi form để cập nhật số lượng trong giỏ hàng
+    form.submit();
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    const radioButtons = document.querySelectorAll('.kichthuoc-radio-buttons');
+
+    radioButtons.forEach(button => {
+      button.addEventListener('change', () => {
+        const productId = button.name.split('_')[1]; // Lấy ID sản phẩm từ tên radio button
+        const selectedValue = button.value; // Lấy giá trị kích thước đã chọn
+        document.getElementById(`kichthuoc_selected_${productId}`).value = selectedValue;
+      });
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var giaMappings = {
+      'M': 0.8,
+      'L': 1.0,
+      'XL': 1.2
+      // Thêm các kích thước khác nếu cần
+    };
+
+    var sanPhams = document.querySelectorAll('.product-item');
+
+    sanPhams.forEach(function (sanPham) {
+      var giaElement = sanPham.querySelector('.card-text');
+      var radioButtons = sanPham.querySelectorAll('.kichthuoc-radio-buttons');
+      var giaBanDau = parseFloat(giaElement.getAttribute('data-gia-ban-dau'));
+      var hiddenGiaInput = sanPham.querySelector('input[name="gia_uoctinh"]');
+      var hiddenKichThuocInput = sanPham.querySelector('input[name="kichthuoc"]');
+      var form = sanPham.querySelector('form');
+
+      if (isNaN(giaBanDau)) {
+        console.error('Giá ban đầu không hợp lệ:', giaElement.getAttribute('data-gia-ban-dau'));
+        return;
+      }
+
+      radioButtons.forEach(function (radio) {
+        radio.addEventListener('change', function () {
+          var kichThuoc = this.getAttribute('data-size');
+          var heSoGia = giaMappings[kichThuoc];
+
+          if (heSoGia === undefined) {
+            console.error('Không tìm thấy hệ số giá cho kích thước:', kichThuoc);
+            return;
+          }
+
+          var giaMoi = giaBanDau * heSoGia;
+          console.log('Kích thước:', kichThuoc, 'Hệ số giá:', heSoGia, 'Giá mới:', giaMoi);
+
+          // Cập nhật hiển thị giá mới
+          giaElement.textContent = 'Giá: ' + formatCurrency(giaMoi) + ' VNĐ';
+
+          // Cập nhật giá trị của trường ẩn
+          hiddenGiaInput.value = giaMoi;
+
+          // Cập nhật giá trị của trường ẩn kích thước
+          hiddenKichThuocInput.value = this.value;
+        });
+      });
+
+      form.addEventListener('submit', function (event) {
+        if (!hiddenKichThuocInput.value) {
+          event.preventDefault();
+          alert('Vui lòng chọn kích thước sản phẩm trước khi thêm vào giỏ hàng.');
+        }
+      });
+    });
+
+    function formatCurrency(amount) {
+      return new Intl.NumberFormat('vi-VN', { style: 'decimal', currency: 'VND' }).format(amount);
+    }
+  });
+        document.getElementById('nvformTructiep').addEventListener('submit', function(event) {
+  const form = event.target;
+  const ghiChuElements = document.querySelectorAll('textarea[name^="ghichu_"]');
+
+  ghiChuElements.forEach((element) => {
+    const idGioHang = element.name.split('_')[1];
+    const ghiChuValue = element.value;
+    
+    // Tạo input ẩn và thêm vào form
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = 'ghichu_' + idGioHang;
+    hiddenInput.value = ghiChuValue;
+    form.appendChild(hiddenInput);
+  });
+});
+        </script>
+        <%- include('../partials/nv_trangcuoi') %>

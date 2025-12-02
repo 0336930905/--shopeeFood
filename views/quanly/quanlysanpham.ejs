@@ -1,0 +1,117 @@
+<%- include('../partials/ql_trangdau') %>
+
+  <body>
+    <div class="container">
+      <div class="row">
+        <h1 class="mt-4">Quản lý sản phẩm</h1>
+        <div class="col">
+          <div class="mt-4">
+            <h2>Tìm kiếm sản phẩm</h2>
+            <form action="/quanly/quanlysanpham/timkiem" method="POST" class="form-inline">
+             <div style="display: flex;">
+              <div class="form-group mr-2">
+                <input type="text" name="keyword" placeholder="Từ khóa" required class="">
+              </div>
+              <button style="margin-left: 8px;" type="submit" class="btn-bt btn-40h">Tìm kiếm</button>
+             </div>
+            </form>
+          </div>
+        </div>
+        <div class="col chuyendoi">
+          <div class="mt-4">
+            <h2>Thêm sản phẩm</h2>
+            <form action="/quanly/quanlysanpham/them" method="POST" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="ten_sp"><p>Tên sản phẩm</p></label>
+                <input type="text" id="ten_sp" name="ten_sp" placeholder="Tên sản phẩm" required class="">
+              </div>
+              <div class="form-group">
+                <label for="trangthai_sp"><p>Trạng thái</p></label>
+                <select id="trangthai_sp" name="trangthai_sp" required class="">
+                  <option value="Còn">Còn</option>
+                  <option value="Hết">Hết</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="gia_sp"><p>Giá sản phẩm</p></label>
+
+                <input type="number" id="gia_sp" name="gia_sp" placeholder="Giá sản phẩm" required class="">
+              </div>
+              <div class="form-group">
+                <label for="anh_sp"><p>Ảnh sản phẩm</p></label>
+                <input type="file" id="anh_sp" name="anh_sp" class="form-control-file">
+              </div>
+              <div class="form-group">
+                <label for="id_dm"><p>Loại</p></label>
+                <select id="id_dm" name="id_dm" required class="">
+                  <% danhmuc.forEach(function(dm) { %>
+                    <option value="<%= dm.ID_DM %>">
+                      <%= dm.TEN_DM %>
+                    </option>
+                    <% }); %>
+                </select>
+                <button type="submit" class="btn-bt">Thêm</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- Danh sách sản phẩm -->
+      <div class="mt-4">
+        <h2>Danh sách sản phẩm</h2>
+        <table class="table table-bordered">
+          <thead class="thead-dark">
+            <tr>
+              <th>ID</th>
+              <th>Tên</th>
+              <th>Trạng thái</th>
+              <th>Giá</th>
+              <th>Ảnh</th>
+              <th>Danh mục</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% sanpham.forEach(function(sp) { %>
+              <form action="/quanly/quanlysanpham/sua/<%= sp.ID_SP %>" method="POST" enctype="multipart/form-data">
+                <tr>
+                  <td><input type="text" name="id_sp" value="<%= sp.ID_SP %>" readonly class=""
+                      style="width: 60px;"></td>
+                  <td><input type="text" name="ten_sp" value="<%= sp.TEN_SP %>" class=""></td>
+                  <td>
+                    <select name="trangthai_sp" class="">
+                      <option value="Còn" <%=sp.TRANGTHAI_SP==='Còn' ? 'selected' : '' %>>Còn</option>
+                      <option value="Hết" <%=sp.TRANGTHAI_SP==='Hết' ? 'selected' : '' %>>Hết</option>
+                    </select>
+                  </td>
+                  <td>
+                    <input type="number" name="gia_sp" value="<%= sp.GIA_SP %>" class="">
+                  </td>
+                  <td>
+                    <% if (sp.ANH_SP) { %>
+                      <img src="/uploads/<%= sp.ANH_SP %>" alt="<%= sp.TEN_SP %>" width="100" class="img-thumbnail">
+                      <% } %>
+                        <input type="file" name="anh_sp" class="form-control-file">
+                  </td>
+                  <td>
+                    <select name="id_dm" required class="">
+                      <% danhmuc.forEach(function(dm) { %>
+                        <option value="<%= dm.ID_DM %>" <%=sp.ID_DM===dm.ID_DM ? 'selected' : '' %>><%= dm.TEN_DM %>
+                        </option>
+                        <% }); %>
+                    </select>
+                  </td>
+                  <td>
+                    <button type="submit" class="btn-bt">Sửa</button>
+                  </td>
+                </tr>
+              </form>
+              <% }); %>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </body>
+
+  <%- include('../partials/ql_trangcuoi') %>

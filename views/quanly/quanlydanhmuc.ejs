@@ -1,0 +1,62 @@
+<%- include('../partials/ql_trangdau') %>
+
+  <body>
+    <div class="container">
+      <div class="row">
+        <h1 class="mt-4">Quản lý danh mục</h1>
+        <div class="col">
+          <div class="mt-4">
+            <h2>Tìm kiếm danh mục</h2>
+            <div style="display: flex;">
+              <form action="/quanly/quanlydanhmuc/timkiem" method="GET" class="form-inline">
+                <div class="form-group">
+                  <input type="text" name="tukhoa" placeholder="Từ khóa" class=" mr-2" required>
+                  <button type="submit" class="btn-bt btn-40h" style="margin-left: 8px; margin-top: 2px;">Tìm
+                    kiếm</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col chuyendoi">
+          <div class="mt-4">
+            <h2 class="mb-4">Thêm danh mục</h2>
+            <form action="/quanly/quanlydanhmuc/them" method="POST" class="form-inline">
+              <div class="form-group">
+                <label for="id_nl">
+                  <p>Tên danh mục:</p>
+                </label>
+                <input type="text" name="ten_dm" style="width: 220px;" placeholder="Tên danh mục" class=" mr-2"
+                  required>
+                <button type="submit" class="btn-bt">Thêm</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <h2>Danh sách danh mục</h2>
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th>ID</th>
+              <th>Tên</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% danhmuc.forEach(function(item) { %>
+              <tr>
+                <form action="/quanly/quanlydanhmuc/sua/<%= item.ID_DM %>" method="POST">
+                  <td><input type="text" name="id_dm" value="<%= item.ID_DM %>" class="" readonly></td>
+                  <td><input type="text" name="ten_dm" value="<%= item.TEN_DM %>" class=""></td>
+                  <td>
+                    <button type="submit" class="btn-bt">Sửa</button>
+                  </td>
+                </form>
+              </tr>
+              <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+  <%- include('../partials/ql_trangcuoi') %>

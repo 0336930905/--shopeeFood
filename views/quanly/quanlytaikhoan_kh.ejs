@@ -1,0 +1,78 @@
+<%- include('../partials/ql_trangdau') %>
+<body>
+    <div class="container">
+     <div class="row">
+       <h1 class="mt-4">Quản lý tài khoản khách hàng</h1>
+      <div class="mt-4">
+        <% if (customers.length > 0) { %>
+          <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Địa chỉ</th>
+                <th>Số điện thoại</th>
+                <th>Tài khoản</th>
+                <th>Email</th>
+                <th>Khóa tài khoản</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% customers.forEach(customer => { %>
+                <tr>
+                  <td>
+                    <input type="text" name="id_sp" value=" <%= customer.ID_KH %>" readonly
+                                        style="width: 110px;">
+                    
+                  </td>
+                  <td>
+                    <input type="text" name="id_sp" value=" <%= customer.TEN_KH %>" readonly
+                                        style="width: 110px;">
+                    
+                  </td>
+                  <td>
+                    <input type="text" name="id_sp" value=" <%= customer.DIACHI_KH %>" readonly
+                                        style="width: 110px;">
+                    
+                  </td>
+                  <td>
+                    <input type="text" name="id_sp" value=" <%= customer.SDT_KH %>" readonly
+                                        style="width: 110px;">
+                    
+                  </td>
+                  <td>
+                    <input type="text" name="id_sp" value=" <%= customer.TAIKHOAN_KH %>" readonly
+                                        style="width: 110px;">
+                    
+                  </td>
+                  <td>
+                    <input type="text" name="id_sp" value=" <%= customer.GMAIL_KH %>" readonly
+                                        style="width: 110px;">
+                    
+                  </td>
+                  
+                  <td>
+                    <input type="text" name="id_sp" value=" <%= customer.KHOA_TAIKHOAN ? 'Đã khóa ' : 'Hoạt động' %>" readonly
+                     class=" <%= customer.KHOA_TAIKHOAN ? 'khoatk' : 'motk' %>" style="width: 110px;">
+                  </td>
+                  <td>
+                    <form action="/quanly/khoataikhoan/<%= customer.ID_KH %>" method="POST">
+                      <input type="hidden" name="KHOA_TAIKHOAN" value="<%= customer.KHOA_TAIKHOAN ? 0 : 1 %>">
+                      <button type="submit" class=" <%= customer.KHOA_TAIKHOAN ? 'btn-bt' : 'btn-xoa' %>">
+                        <%= customer.KHOA_TAIKHOAN ? 'Mở khóa' : 'Khóa' %>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } else { %>
+          <p>Không có tài khoản khách hàng nào.</p>
+        <% } %>
+      </div>
+     </div>
+    </div>
+  </body>
+<%- include('../partials/ql_trangcuoi') %>

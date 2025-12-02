@@ -1,0 +1,134 @@
+<%- include('../partials/ql_trangdau') %>
+
+<div class="container">
+  <div class="row">
+    <h1>Thống kê Doanh thu</h1>
+
+    <!-- Form chọn tháng và năm -->
+    <div class="col-5">
+      <div class="mt-4">
+        <h2 class="mt-4">Chọn tháng</h2>
+        <form action="/quanly/thongkedoanhthu" method="GET">
+          <label for="month" style="margin: 0; width: auto;">Tháng:</label>
+          <select id="month" name="month">
+            <% for (let i = 1; i <= 12; i++) { %>
+              <option value="<%= i %>" <%= i == selectedMonth ? 'selected' : (i == new Date().getMonth() + 1 ? 'selected' : '') %>><%= i %></option>
+            <% } %>
+          </select>
+          <label for="year" style="margin: 0; width: auto;">Năm:</label>
+          <select id="year" name="year">
+            <% 
+              const currentYear = new Date().getFullYear(); 
+              const startYear = currentYear - 10; 
+            %>
+            <% for (let i = startYear; i <= currentYear; i++) { %>
+              <option value="<%= i %>" <%= i == selectedYear || i == currentYear ? 'selected' : '' %>><%= i %></option>
+            <% } %>
+          </select>
+          <button type="submit" class="btn-bt">Xem Thống Kê</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tổng quan doanh thu và sản phẩm bán chạy nhất/ít nhất -->
+    <div class="col-7 chuyendoi">
+      <div class="mt-4">
+        <h2 class="mt-4">Tổng quan</h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hiển thị biểu đồ doanh thu và sản phẩm -->
+  <div class="row">
+    <div class="col">
+      <div class="mt-4">
+        <h5>Thống kê doanh thu</h5>
+        <canvas id="revenueChart"></canvas>
+      </div>
+    </div>
+    <% function formatCurrency(amount) { return new Intl.NumberFormat('vi-VN', { style: 'decimal', currency: 'VND' }).format(amount); } %>
+    <div class="col">
+      <div style="border: solid 1px #ccc;" class="mau333">
+        <% if (doanhThu) { %>
+          <p>Doanh thu ước tính: <span><%= formatCurrency(doanhThu.DoanhThuDatTruoc) %></span> VND</p>
+          <p>Tổng doanh thu: <span><%= formatCurrency(doanhThu.TongDoanhThu) %></span> VND</p>
+          <p>Tổng số lượng ly bán được: <span><%= doanhThu.TongSoLuongLyBanDuoc %></span></p>
+        <% } else { %>
+          <p>Không có dữ liệu doanh thu cho tháng này.</p>
+        <% } %>
+
+        <% if (productStats.mostSold) { %>
+          <p>Sản phẩm bán chạy nhất: <span><%= productStats.mostSold.TEN_SP %></span> (Số lượng: <%= productStats.mostSold.TONG_SO_LUONG_BAN %>)</p>
+        <% } else { %>
+          <p>Không có dữ liệu sản phẩm bán chạy nhất.</p>
+        <% } %>
+
+        <% if (productStats.leastSold) { %>
+          <p>Sản phẩm bán ít nhất: <span><%= productStats.leastSold.TEN_SP %></span> (Số lượng: <%= productStats.leastSold.TONG_SO_LUONG_BAN %>)</p>
+        <% } else { %>
+          <p>Không có dữ liệu sản phẩm bán ít nhất.</p>
+        <% } %>
+      </div>
+      <div class="mt-4">
+        <h5>Thống kê lượt bán sản phẩm</h5>
+        <canvas id="productSalesChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/ql_trangcuoi') %>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Dữ liệu cho biểu đồ doanh thu
+  const revenueData = {
+    labels: ['Tổng doanh thu', 'Doanh thu ước tính'],
+    datasets: [{
+      label: 'Doanh thu',
+      data: [
+        <%= doanhThu ? doanhThu.TongDoanhThu : 0 %>, 
+        <%= doanhThu ? doanhThu.DoanhThuDatTruoc : 0 %>, 
+        <%= doanhThu ? doanhThu.DoanhThuTrucTiep : 0 %>, 
+        <%= doanhThu ? doanhThu.DoanhThuChuyenKhoan : 0 %>
+      ],
+      backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+      hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']
+    }]
+  };
+
+  // Biểu đồ doanh thu (Doughnut)
+  const revenueChartCtx = document.getElementById('revenueChart').getContext('2d');
+  const revenueChart = new Chart(revenueChartCtx, {
+    type: 'doughnut',
+    data: revenueData,
+  });
+
+  // Dữ liệu cho biểu đồ sản phẩm bán chạy nhất và ít nhất
+  const productSalesData = {
+    labels: ['Sản phẩm bán nhiều nhất', 'Sản phẩm bán ít nhất'],
+    datasets: [{
+      label: 'Số lượng bán',
+      data: [
+        <%= productStats.mostSold ? productStats.mostSold.TONG_SO_LUONG_BAN : 0 %>, 
+        <%= productStats.leastSold ? productStats.leastSold.TONG_SO_LUONG_BAN : 0 %>
+      ],
+      backgroundColor: ['#FF6384', '#36A2EB'],
+      hoverBackgroundColor: ['#FF6384', '#36A2EB']
+    }]
+  };
+
+  // Biểu đồ sản phẩm bán chạy nhất và ít nhất (Bar)
+  const productSalesChartCtx = document.getElementById('productSalesChart').getContext('2d');
+  const productSalesChart = new Chart(productSalesChartCtx, {
+    type: 'bar',
+    data: productSalesData,
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>

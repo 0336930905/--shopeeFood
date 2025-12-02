@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Thêm Bootstrap CSS -->
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    /* CSS cho nút */
+    #startButton,
+    #endButton {
+      margin-right: 10px;
+      /* Khoảng cách giữa các nút */
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light ">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">Trang chủ</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+              <div class="menu-kh">
+                  <a class="menu-kh--value" href="/nhanvien/datnuoc" onclick="setActive(this)">Đặt nước</a>
+                  <a class="menu-kh--value" href="/nhanvien/chamcong" onclick="setActive(this)">Chấm công</a>
+                  <a class="menu-kh--value" href="/nhanvien/dangkylam" onclick="setActive(this)">Gợi ý lịch làm</a>
+                  <a class="menu-kh--value" href="/nhanvien/lichlamchinhthuc" onclick="setActive(this)">Xem lịch làm </a>
+                  <a class="menu-kh--value" href="/nhanvien/lichsu_oder" onclick="setActive(this)">lịch sử hóa đơn</a>
+                  <a class="menu-kh--value" href="/nhanvien/xemthongtin" onclick="setActive(this)">Hồ sơ</a>
+                  <a class="menu-kh--value" href="/nhanvien/nguyenlieu" onclick="setActive(this)"><span id="nguyenlieu-count" style="color: red;"></span>Nguyên liệu</a>
+                  <a class="menu-kh--value" href="/nhanvien/xacnhandon" onclick="setActive(this)"><span id="order-count" style="color: red;"></span>Đơn hàng mới</a>
+                  <a class="menu-kh--value" href="/dangxuat" onclick="setActive(this)">Đăng xuất</a>
+              </div>
+          </ul>
+      </div>
+      </div>
+    </nav>
+  </header>
+  <script>
+    // Gọi API để lấy số lượng đơn hàng mới và cập nhật trong menu điều hướng
+    fetch('/nhanvien/donhangmoi')
+      .then(response => response.json())
+      .then(data => {
+        const orderCount = document.getElementById('order-count');
+        orderCount.textContent = ` (${data.count})`;
+      })
+      .catch(error => {
+        console.error('Lỗi khi lấy số lượng đơn hàng mới:', error);
+      });
+      fetch('/nhanvien/nguyenlieusaphet')
+      .then(response => response.json())
+      .then(data => {
+        const nguyenlieuCount = document.getElementById('nguyenlieu-count');
+        nguyenlieuCount.textContent = ` (${data.count})`;
+      })
+      .catch(error => {
+        console.error('Lỗi khi lấy số lượng nguyên liệu sắp hết:', error);
+      });
+              // Function to set active state
+              function setActive(element) {
+            // Lưu href của phần tử được click vào Local Storage
+            localStorage.setItem('activeMenu', element.getAttribute('href'));
+
+            // Xóa lớp active từ tất cả các phần tử
+            document.querySelectorAll('.menu-kh--value').forEach((el) => {
+                el.classList.remove('active');
+            });
+
+            // Thêm lớp active vào phần tử được click
+            element.classList.add('active');
+        }
+
+        // Khi tải lại trang, kiểm tra Local Storage và thiết lập trạng thái active
+        document.addEventListener('DOMContentLoaded', () => {
+            const activeMenu = localStorage.getItem('activeMenu');
+            if (activeMenu) {
+                const activeElement = document.querySelector(`.menu-kh--value[href='${activeMenu}']`);
+                if (activeElement) {
+                    activeElement.classList.add('active');
+                }
+            }
+        });
+  </script>

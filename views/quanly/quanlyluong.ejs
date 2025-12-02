@@ -1,0 +1,120 @@
+<%- include('../partials/ql_trangdau') %>
+
+  <body>
+    <div class="container">
+      <div class="row">
+        <h1 class="mt-4">Quản lý lương</h1>
+        <div class="col-4">
+          <div class="mt-4">
+            <h2 class="mt-4">Chọn tháng</h2>
+            <form method="GET" action="/quanly/quanlyluong" class="form-inline justify-content-center mb-4">
+              <div class="input-group w-auto">
+              <select name="thang" id="thang" class="form-control">
+                <% for (let i=1; i <=12; i++) { let thang=i.toString().padStart(2, '0' ); let nam=new
+                  Date().getFullYear(); %>
+                  <option value="<%= `${nam}-${thang}` %>" <%=currentMonth===`${nam}-${thang}` ? 'selected' : '' %>><%=
+                      `${thang}-${nam}` %>
+                  </option>
+                  <% } %>
+              </select>
+              <button type="submit" class="btn-bt" style="margin: 0;">Xem lương</button>
+            </div>
+            </form>
+          </div>
+        </div>
+        <div class="col-8 chuyendoi">
+          <div class="mt-4">
+            <h2 class="mt-4">Lương trong tháng</h2>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-4">
+
+        </div>
+        <div class="col-8 ">
+            <table class="table ">
+              <thead class="thead-dark">
+                <tr>
+                  <th>Tên nhân viên</th>
+                  <th>Số lần chấm công</th>
+                  <th>Tổng số giờ làm</th>
+                  <th>Tổng lương của tháng</th>
+                  <th>Xác nhận</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% Object.values(luongByNhanVien).forEach(luong=> { %>
+                  <tr>
+                    <td>
+                      <%= luong.ten_nv %>
+                    </td>
+                    <td>
+                      <%= luong.tong_ngay_lam %>
+                    </td>
+                    <td>
+                      <%= luong.tong_gio_lam.toFixed(2) %>
+                    </td>
+                    <td>
+                      <% if (luong.muc_luong) { %>
+                        <%= Math.floor(luong.tong_gio_lam * luong.muc_luong).toLocaleString('vi-VN') %> VND
+                          <% } else { %>
+                            N/A
+                            <% } %>
+                    </td>
+                    <td>
+                      <form action="/luong/xacnhan" method="POST">
+                        <input type="hidden" name="ngay_tinh" value="<%= currentMonth + '-01' %>">
+                        <input type="hidden" name="tong_luong"
+                          value="<%= (luong.tong_gio_lam * luong.muc_luong).toFixed(2) %>">
+                        <input type="hidden" name="id_nv" value="<%= luong.id_nv %>">
+                        <button type="submit" class="btn-bt">Xác nhận</button>
+                      </form>
+                    </td>
+                  </tr>
+                  <% }); %>
+              </tbody>
+            </table>
+        </div>
+        <h2 class="mt-4">Lương đã xác nhận</h2>
+        <div class="col-12">
+                    <!-- Hiển thị kết quả lương -->
+                    <table class="table">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th>Ngày Tính Lương</th>
+                          <th>Họ Tên Nhân Viên</th>
+                          <th>Tổng Lương</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% if (luongResults.length > 0) { %>
+                          <% luongResults.forEach(luong => { %>
+                            <tr>
+                              <td><%= new Date(luong.NGAYTINH_L).toLocaleDateString() %></td>
+                              <td><%= luong.HOTEN_NV %></td>
+                              <td><%= Math.floor(luong.TONG_L).toLocaleString('vi-VN') %> VND</td>
+                            </tr>
+                          <% }) %>
+                        <% } else { %>
+                          <tr>
+                            <td colspan="3">Tháng này chưa được tính lương</td>
+                          </tr>
+                        <% } %>
+                      </tbody>
+                    </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      function printPayslip(idNv, month) {
+        window.open(`/luong/in-phieu/${idNv}/${month}`, '_blank');
+      }
+    </script>
+  </body>
+  <%- include('../partials/ql_trangcuoi') %>

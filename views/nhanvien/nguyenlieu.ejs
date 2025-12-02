@@ -1,0 +1,26 @@
+<%- include('../partials/nv_trangdau') %>
+<style>
+    .container{
+        margin-bottom: 374px;
+    }
+</style>
+    <body>
+        <div class="container">
+            <div class="row ">
+                <h2 class="mb-4">Danh sách nguyên liệu</h2>
+                <% if (nguyenlieu.length> 0) { %>
+                    <% nguyenlieu.forEach(item=> { %> 
+                        <p class="card-text">Tên nguyên liệu: <%= item.TEN_NL %>
+                        </p>
+                        <p class="card-text">Dung tích: <%= item.DUNG_TICH_NL %>
+                        </p>
+                        <% }) %>
+                            <% } else { %>
+                                <div class="alert alert-info mt-4">
+                                    Không có nguyên liệu sắp hết.
+                                  </div>
+                                <% } %>
+            </div>
+        </div>
+    </body>
+    <%- include('../partials/nv_trangcuoi') %>

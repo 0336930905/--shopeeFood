@@ -1,0 +1,855 @@
+body {
+  background-color: ghostwhite;
+}
+
+#slide {
+  width: max-content;
+  margin-top: 50px;
+  height: 648px;
+}
+
+.item--index {
+  width: 200px;
+  height: 300px;
+  background-position: 50% 50%;
+  display: inline-block;
+  transition: 0.5s;
+  background-size: cover;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  transform: translate(0, -50%);
+  border-radius: 20px;
+  box-shadow: 0 30px 50px #505050;
+  background-image: url('/uploads/4.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.item--index:nth-child(1),
+.item--index:nth-child(2) {
+  left: 0;
+  top: 0;
+  transform: translate(0, 0);
+  border-radius: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: none;
+}
+
+.item--index:nth-child(3) {
+  left: 50%;
+}
+
+.item--index:nth-child(4) {
+  left: calc(50% + 220px);
+}
+
+.item--index:nth-child(5) {
+  left: calc(50% + 440px);
+}
+
+.item--index:nth-child(n+6) {
+  left: calc(50% + 550px);
+  opacity: 0;
+}
+
+.item--index:nth-child(2) .content {
+  display: block;
+  z-index: 11111;
+}
+
+.item--index:nth-child(3)>.content {
+  left: 0;
+}
+
+.item--index .content {
+  position: absolute;
+  background-color: rgba(33, 30, 30, 0.5);
+  top: 50%;
+  left: 100px;
+  min-height: 200px;
+  width: 600px;
+  text-align: left;
+  padding: 0;
+  transform: translate(0, -50%);
+  display: none;
+  font-family: system-ui;
+  border-radius: 30px;
+}
+
+.item--index .content>div,
+.item--index .content>button {
+  margin: 20px;
+  justify-content: center;
+  text-align: center;
+
+}
+
+.item--index .name {
+  font-size: 40px;
+  font-weight: bold;
+  opacity: 0;
+  animation: showcontent 1s ease-in-out 1 forwards
+}
+
+.item--index .des {
+  margin: 20px 0;
+  opacity: 0;
+  animation: showcontent 1s ease-in-out 0.3s 1 forwards;
+  font-size: 15px;
+  color: ghostwhite;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  
+}
+
+.item--index button {
+  padding: 10px 20px;
+  border: none;
+  opacity: 0;
+  animation: showcontent 1.5s ease-in-out 0.6s 1 forwards;
+}
+
+@keyframes showcontent {
+  from {
+    opacity: 0;
+    transform: translate(0, 30px);
+    filter: blur(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+    filter: blur(0);
+  }
+}
+
+
+
+.buttons {
+  position: absolute;
+  bottom: 30px;
+  z-index: 222222;
+  text-align: center;
+  width: 100%;
+}
+.button-container{
+  margin-top: 30px;
+  bottom: 30px;
+  text-align: center;
+  width: 100%;
+}
+.button-container button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid #555;
+  transition: 0.5s;
+}
+.buttons button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid #555;
+  transition: 0.5s;
+}
+
+.buttons button:hover {
+  background-color: #bac383;
+}
+
+
+/* From Uiverse.io by andrew-demchenk0 */
+.card--about {
+  --main-color: #323232;
+  --sub-color: #5b5b5b;
+  --bg-color: #c7c7c7;
+  --accent-color: #242C88;
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  width: 270px;
+  padding: 25px;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: var(--bg-color);
+  transition: all 0.2s;
+  cursor: pointer;
+  box-shadow: 0px 0px 5px -1.5px #000;
+}
+
+.card--about::before {
+  content: '';
+  width: 99%;
+  height: 99%;
+  background: var(--sub-color);
+  position: absolute;
+  z-index: -1;
+  top: 1px;
+  left: 1px;
+  border-radius: 25px;
+  transition: all 0.3s;
+}
+
+.card--about__wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card--about__img {
+  position: relative;
+  width: 100%;
+  /* Đặt chiều rộng tối đa là 100% của phần tử cha */
+  max-width: 300px;
+  /* Hoặc bạn có thể giới hạn chiều rộng tối đa */
+  margin: 0 auto;
+  /* Căn giữa phần tử */
+  overflow: hidden;
+  /* Đảm bảo rằng hình ảnh không tràn ra ngoài phần tử cha */
+  border-radius: 15px;
+  /* Bo góc cho phần tử */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* Đổ bóng nhẹ cho phần tử */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* Tạo hiệu ứng chuyển động */
+}
+
+.card--about__img img {
+  width: 100%;
+  /* Hình ảnh sẽ chiếm toàn bộ chiều rộng của phần tử cha */
+  height: auto;
+  /* Giữ nguyên tỉ lệ của hình ảnh */
+  display: block;
+  /* Đảm bảo không có khoảng trắng xung quanh hình ảnh */
+  border-radius: inherit;
+  /* Bo góc hình ảnh giống như phần tử cha */
+  transition: transform 0.3s ease;
+  /* Tạo hiệu ứng chuyển động cho hình ảnh */
+}
+
+.card--about__img:hover {
+  transform: scale(1.05);
+  /* Tăng kích thước khi hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  /* Tăng đổ bóng khi hover */
+}
+
+.card--about__img img:hover {
+  transform: scale(1.1);
+  /* Phóng to hình ảnh khi hover */
+}
+
+
+.card--about__title {
+  color: var(--main-color);
+  font-weight: 900;
+  font-size: 25px;
+}
+
+.card--about__subtitle {
+  color: var(--sub-color);
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.card--about__icon {
+  width: 40px;
+  height: 40px;
+  transform: rotate(-45deg);
+  transition: all 0.3s;
+}
+
+.card--about__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.card--about__icon g {
+  fill: var(--main-color);
+}
+
+.card--about__icon circle,
+polyline,
+line {
+  stroke: var(--main-color);
+}
+
+.card--about:hover .card--about__icon {
+  transform: rotate(0);
+}
+
+.card--about:hover .card--about__icon circle,
+.card--about:hover .card--about__icon polyline,
+.card--about:hover .card--about__icon line {
+  stroke: var(--accent-color);
+}
+
+.card--about:hover .card--about__icon g {
+  fill: var(--accent-color);
+}
+
+.card--about:hover {
+  box-shadow: 0px 0px 20px -5px #000;
+}
+
+.card--about:hover::before {
+  transform: rotate(10deg);
+  box-shadow: 0px 0px 20px -5px #000;
+}
+
+/* remove svg from class ="card--about__img" and last styles below css code before use */
+.st1 {
+  fill: #fff
+}
+
+.st2 {
+  fill: none;
+  stroke: #242c88;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-miterlimit: 10
+}
+
+.st7 {
+  fill: #589fff
+}
+
+.st9 {
+  fill: #bc8d66
+}
+
+.st15,
+.st16 {
+  opacity: .4;
+  fill: #242c88
+}
+
+.st16 {
+  opacity: .2
+}
+
+.st18 {
+  fill: #ffc408
+}
+
+.st53 {
+  fill: none;
+  stroke: #242c88;
+  stroke-width: 1.848;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-miterlimit: 10
+}
+
+
+.main--menu {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+  margin: 0;
+  display: flex;
+  width: 100%;
+}
+
+.menu-container {
+  margin-left: 100px;
+  width: 100%;
+  margin-right: 100px;
+}
+
+.img-container {
+  position: relative;
+  /* Đặt phần tử chứa ảnh ở vị trí tương đối */
+  display: inline-block;
+  /* Giữ kích thước tự động theo kích thước của ảnh */
+}
+
+.menu--img {
+  height: 850px;
+  width: 100%;
+  /* Chiếm toàn bộ chiều rộng của phần tử cha */
+}
+
+.btn-menu {
+  position: absolute;
+  /* Đặt nút ở vị trí tuyệt đối so với phần tử cha */
+  top: 50%;
+  /* Đặt nút ở giữa theo chiều dọc */
+  left: 50%;
+  /* Đặt nút ở giữa theo chiều ngang */
+  transform: translate(-50%, -50%);
+  /* Điều chỉnh lại vị trí của nút để căn giữa hoàn toàn */
+  padding: 10px 20px;
+  /* Đặt kích thước của nút */
+  background-color: rgba(0, 0, 0, 0.6);
+  /* Màu nền đen với độ mờ */
+  color: #fff;
+  /* Màu chữ trắng */
+  border: none;
+  /* Bỏ viền */
+  border-radius: 5px;
+  /* Bo tròn các góc của nút */
+  font-size: 16px;
+  /* Đặt cỡ chữ */
+  cursor: pointer;
+  /* Thay đổi con trỏ chuột khi hover */
+  transition: background-color 0.3s ease;
+  /* Hiệu ứng mượt mà khi hover */
+}
+
+.btn-menu:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  /* Thay đổi màu nền khi hover */
+}
+
+
+.conten-menu {
+  height: 700px;
+  border-radius: 15px;
+}
+
+.conten-menu>.row {
+  height: 790px;
+}
+
+.menu--img-item {
+  height: 250px;
+}
+
+.conten-menu--img {
+  height: 200px;
+  min-width: 310px;
+  border-radius: 10px;
+}
+
+.row>.col-6>div {
+  margin-left: 40px;
+  margin-right: 40px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: ghostwhite;
+}
+
+.col-6>div>h2 {
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+}
+
+.col-6>div>p {
+  font-family: 'Lato', sans-serif;
+  font-size: 15px;
+}
+
+.menu--item-text {
+  font-weight: 100;
+  color: blanchedalmond;
+}
+
+.background-color-menu {}
+
+.background-color-menu::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(white, rgba(255, 255, 255, .2) 2px, transparent 40px),
+    radial-gradient(white, rgba(255, 255, 255, .15) 1px, transparent 30px),
+    radial-gradient(white, rgba(255, 255, 255, .1) 2px, transparent 40px);
+  background-size: 550px 550px, 350px 350px, 250px 250px;
+  background-position: 0 0, 40px 60px, 130px 270px;
+  animation: twinkle 10s linear infinite;
+}
+
+.chuyendoi-l {
+  color: #333;
+}
+
+.conten-menu>h1 {
+  color: #333;
+}
+
+.main--about {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+  margin: 0;
+  display: flex;
+  width: 100%;
+}
+
+.about-container {
+  width: 100%;
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+
+/* Tùy chỉnh chung */
+.main--about {
+  width: 100%;
+  padding: 50px 0;
+  background-color: #f8f9fa;
+  font-family: 'Arial', sans-serif;
+}
+
+.about-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.container-camon{
+  background-color: #f7f7f7;
+  padding: 50px 20px;
+  text-align: center;
+}
+.footer-text {
+  font-size: 18px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* Footer Container */
+.footer--container {
+  background-color: ghostwhite;
+  color: #333;
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Footer Content Layout */
+.footer--content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+/* Footer Section */
+.footer--section {
+  flex: 1;
+  min-width: 200px;
+  margin: 10px;
+}
+
+/* Footer Title */
+.footer--title {
+  font-size: 18px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Footer Text */
+.footer--text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+}
+
+/* Footer Links */
+.footer--links .footer--list {
+  list-style: none;
+  padding: 0;
+}
+
+.footer--link {
+  color: #333;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 5px;
+  transition: color 0.3s ease;
+}
+
+.footer--link:hover {
+  color: #f1c40f;
+}
+
+/* Footer Icons */
+.footer--icon {
+  margin-right: 8px;
+}
+
+.footer--social-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.footer--social-link {
+  color: #333;
+  font-size: 20px;
+  transition: color 0.3s ease;
+}
+
+.footer--social-link:hover {
+  color: #f1c40f;
+}
+
+/* Footer Copyright */
+.footer--copyright {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #444;
+}
+
+.footer--copyright .footer--text {
+  margin: 0;
+}
+
+.main-footer{
+  margin-left: 150px;
+  margin-right: 150px;
+}
+
+ul {
+  list-style: none;
+}
+.example-2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+.example-2 .icon-content {
+  margin: 0 10px;
+  position: relative;
+}
+.example-2 .icon-content .tooltip {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 15px;
+  opacity: 0;
+  visibility: hidden;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+.example-2 .icon-content:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  top: -50px;
+}
+.example-2 .icon-content a {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 20%;
+  color: #4d4d4d;
+  background-color: #ffff;
+  transition: all 0.3s ease-in-out;
+}
+.example-2 .icon-content a:hover {
+  box-shadow: 3px 2px 45px 0px rgb(0 0 0 / 50%);
+}
+.example-2 .icon-content a svg {
+  position: relative;
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+}
+.example-2 .icon-content a:hover {
+  color: white;
+}
+.example-2 .icon-content a .filled {
+  position: absolute;
+  top: auto;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background-color: #000;
+  transition: all 0.3s ease-in-out;
+}
+.example-2 .icon-content a:hover .filled {
+  height: 100%;
+}
+.example-2 .icon-content a[data-social="spotify"] .filled,
+.example-2 .icon-content a[data-social="spotify"] ~ .tooltip {
+  background-color: #1db954;
+}
+.example-2 .icon-content a[data-social="pinterest"] .filled,
+.example-2 .icon-content a[data-social="pinterest"] ~ .tooltip {
+  background-color: #bd081c;
+}
+.example-2 .icon-content a[data-social="dribbble"] .filled,
+.example-2 .icon-content a[data-social="dribbble"] ~ .tooltip {
+  background-color: #ea4c89;
+}
+.example-2 .icon-content a[data-social="telegram"] .filled,
+.example-2 .icon-content a[data-social="telegram"] ~ .tooltip {
+  background-color: #0088cc;
+}
+
+
+
+.banner{
+  height: 55vh;
+  overflow: hidden;
+  position: relative;
+}
+.product{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -40px;
+  z-index: 2;
+  transition: 0.7s;
+}
+.product .soda{
+  position: absolute;
+  bottom: 0;
+  left: calc(50%);
+  transform: translateX(-50%);
+}
+.soda{
+  --left: 0px;
+  background: 
+      var(--url) var(--left),
+      url(/uploads/mockup.jpg) 0 0;
+  background-size: auto 100%;
+  width: 480px;
+  aspect-ratio: 2 / 2;
+  background-blend-mode: multiply;
+  transition: 0.8s;
+  mask-image: url(/uploads/mockup.jpg);
+  mask-size: auto 100%;
+}
+.soda:nth-child(2){
+  opacity: 0;
+}
+.product:hover{
+  bottom: 0px;
+}
+.product:hover .soda:nth-child(2){
+  opacity: 1;
+  --left: 500px;
+}
+.product:hover .soda:nth-child(1){
+  opacity: 0;
+  --left: 500px;
+}
+.navbar{
+  z-index: 2;
+  background-color: rgba(244, 236, 236, 0.5);
+}
+.navbar-expand-lg .navbar-nav{
+  flex-direction: row;
+}
+.navbar-expand-lg .navbar-collapse {
+  display: flex !important;
+  flex-basis: auto;
+}
+.navbar-expand-lg {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+.navbar-expand-lg .navbar-nav {
+  flex-direction: row;
+}
+.nav-item {
+  list-style: none;
+}
+.navbar-nav .nav-item a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+}
+.nav-item a {
+  text-decoration: none;
+  margin-left: 10px;
+}
+li a {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  margin-right: 10px;
+  float: left;
+}
+.navbar-nav {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+ 
+}
+
+.xemthemmenu{
+  margin-left: 20px;
+  cursor: pointer;
+  position: relative;
+}
+
+.modal {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  border: 1px solid #888;
+  padding: 10px;
+  height: 380px;
+  width: 250px;
+  background-color: rgba(22, 18, 18, 0.5);
+}
+.modal > img{
+  height: 200px;
+  width: 180px;
+  display: block;
+  margin: 0 auto;
+}
+
+.muangay{
+  display: flex;
+  align-items: center;
+  font-family: inherit;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 17px;
+  padding: 0.8em 1.3em 0.8em 0.9em;
+  color: white;
+  background: #ad5389;
+  background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+  border: none;
+  letter-spacing: 0.05em;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  text-decoration: none;
+  text-align: center;
+}
+.main--muangay  svg {
+  margin-right: 3px;
+  transform: rotate(30deg);
+  transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.main--muangay  span {
+  transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.main--muangay:hover  svg {
+  transform: translateX(5px) rotate(90deg);
+}
+
+.main--muangay:hover span {
+  transform: translateX(7px);
+}
+.center-text {
+  text-align: center;
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phiếu Lương</title>
+  <style>
+    /* Thêm CSS để định dạng phiếu lương */
+  </style>
+</head>
+<body>
+  <h1>Phiếu Lương</h1>
+  <p>Tháng: <%= month %></p>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>ID Chấm Công</th>
+        <th>Ngày</th>
+        <th>Thời gian vào ca</th>
+        <th>Thời gian kết ca</th>
+        <th>Tên Nhân Viên</th>
+        <th>Chức Vụ</th>
+        <th>Tổng Lương</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% results.forEach(item => { %>
+        <tr>
+          <td><%= item.ID_CC %></td>
+          <td><%= item.NGAY_CC %></td>
+          <td><%= item.THOIGIANVAOCA %></td>
+          <td><%= item.THOIGIANKETCA %></td>
+          <td><%= item.HOTEN_NV %></td>
+          <td><%= item.TEN_CV %></td>
+          <td><%= item.TONG_L ? item.TONG_L.toLocaleString('vi-VN') + ' VND' : 'Chưa xác nhận' %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</body>
+</html>

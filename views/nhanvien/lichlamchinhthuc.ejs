@@ -1,0 +1,520 @@
+<%- include('../partials/nv_trangdau') %>
+  <style>
+    .display-flex>p {
+      margin-left: 10px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.4);
+      padding-top: 60px;
+    }
+
+    /* Modal content */
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+
+    /* Close button */
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* Form controls */
+    .form-group label {
+      font-weight: bold;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 15px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    label{
+      width: 150px;
+    }
+  </style>
+
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col ">
+          <h2 class="mt-4">Lịch làm tổng</h2>
+          <tr>
+            <td><input type="text" name="id_sp" value="Ngày làm" readonly style="width: 120px;"></td>
+            <td> <input type="text" name="id_sp" value="Ca 1" readonly style="width: 150px;"></td>
+            <td> <input type="text" name="id_sp" value="Ca 2" readonly style="width: 150px;"></td>
+            <td> <input type="text" name="id_sp" value="Ca 3" readonly style="width: 150px;"></td>
+          </tr>
+          <% lichlamtong.forEach(function(lichtong) { %>
+            <tr>
+              <td>
+                <input type="text" name="id_sp" value="<%= new Date(lichtong.NGAY_L).toLocaleDateString('vi-VN') %>"
+                  readonly style="width: 120px;">
+              </td>
+              <td>
+                <input type="text" name="id_sp"
+                  value="<%= lichtong.CA_1_TEN_NV ? lichtong.CA_1_TEN_NV : 'Chưa phân công' %>" readonly
+                  style="width: 150px;">
+              </td>
+              <td>
+                <input type="text" name="id_sp"
+                  value="<%= lichtong.CA_2_TEN_NV ? lichtong.CA_2_TEN_NV : 'Chưa phân công' %>" readonly
+                  style="width: 150px;">
+              </td>
+              <td>
+                <input type="text" name="id_sp"
+                  value="<%= lichtong.CA_3_TEN_NV ? lichtong.CA_3_TEN_NV : 'Chưa phân công' %>" readonly
+                  style="width: 150px;">
+              </td>
+            </tr>
+            <% }); %>
+        </div>
+        <div class="col chuyendoi">
+          <div style="margin-top: 10px; margin-left: 58px;">
+            <h2 class="mt-4">Lịch làm của bạn</h2>
+            <% lichlam.forEach(function(lich) { %>
+              <% if (lich.CA_1===idNhanVien) { %>
+                <div class="display-flex">
+
+                  <input style="width: 100px; margin: 10px;" type="text" value="Ngày làm">
+                  <input type="text" name="id_sp" value="<%= new Date(lich.NGAY_L).toLocaleDateString('vi-VN') %>"
+                    readonly style="width: 120px;">
+
+                  <input style="width: 90px; margin: 10px;" type="text" value="Ca 1"> <input type="text" name="id_sp"
+                    value="<%= lich.CA_1_TEN_NV %>" readonly style="width: 140px;">
+
+                </div>
+                <% } %>
+                  <% if (lich.CA_2===idNhanVien) { %>
+                    <div class="display-flex">
+                      <input style="width: 100px; margin: 10px;" type="text" value="Ngày làm">
+                      <input type="text" name="id_sp" value="<%= new Date(lich.NGAY_L).toLocaleDateString('vi-VN') %>"
+                        readonly style="width: 120px;">
+                      <input style="width: 90px; margin: 10px;" type="text" value="Ca 2"> <input type="text"
+                        name="id_sp" value="<%= lich.CA_2_TEN_NV %>" readonly style="width: 140px;">
+                    </div>
+                    <% } %>
+                      <% if (lich.CA_3===idNhanVien) { %>
+                        <div class="display-flex">
+                          <input style="width: 100px; margin: 10px;" type="text" value="Ngày làm">
+                          <input type="text" name="id_sp"
+                            value="<%= new Date(lich.NGAY_L).toLocaleDateString('vi-VN') %>" readonly
+                            style="width: 120px;">
+                          <input style="width: 90px; margin: 10px;" type="text" value="Ca 3"> <input type="text"
+                            name="id_sp" value="<%= lich.CA_3_TEN_NV %>" readonly style="width: 140px;">
+                        </div>
+                        <% } %>
+                          <% }); %>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <form action="/nhanvien/lichlamchinhthuc/timlichlam" method="POST">
+            <h2>Xin thay đổi lịch làm</h2>
+            <select name="ngay_l" id="ngay_l">
+              <% if (lichlam.length > 0) { %>
+              <% lichlam.forEach(function(lich) { %>
+                <% const date = new Date(lich.NGAY_L); const offset = date.getTimezoneOffset(); const adjustedDate = new Date(date.getTime() - offset * 60 * 1000); const formattedDate = adjustedDate.toISOString().split('T')[0]; const displayDate = date.toLocaleDateString('vi-VN', { year: 'numeric' , month: '2-digit' , day: '2-digit' }); %>
+                <option value="<%= formattedDate %>" data-id="<%= lich.ID_LL %>">
+                  <%= displayDate %>
+                </option>
+              <% }); %>
+              <% } else { %>
+              <option>Không có ngày đăng ký làm nào.</option>
+              <% } %>
+            </select>
+            <button type="submit" class="btn-bt" id="openModalButton">Xác nhận</button>
+          </form>
+          <form action="/quanly/xinnghiphep/xacnhan" method="POST" class="mt-4">
+            <h2>Xin nghỉ phép</h2>
+            <input type="hidden" value="<%= idNhanVien %>" id="id_nv" name="ID_NV" readonly>
+            
+            <div class="form-group">
+              <label for="ngay_l">Chọn ngày nghỉ:</label>
+              <select name="ngay_l" id="ngay_l" onchange="updateIDLL(this)">
+                <% if (lichlam.length > 0) { %>
+                  <% lichlam.forEach(function(lich) { %>
+                    <% const date = new Date(lich.NGAY_L); 
+                       const offset = date.getTimezoneOffset(); 
+                       const adjustedDate = new Date(date.getTime() - offset * 60 * 1000); 
+                       const formattedDate = adjustedDate.toISOString().split('T')[0]; 
+                       const displayDate = date.toLocaleDateString('vi-VN', { year: 'numeric', month: '2-digit', day: '2-digit' }); %>
+                    <option value="<%= formattedDate %>" data-id="<%= lich.ID_LL %>">
+                      <%= displayDate %>
+                    </option>
+                  <% }); %>
+                <% } else { %>
+                  <option>Không có ngày đăng ký làm nào.</option>
+                <% } %>
+              </select>
+              <input type="hidden" id="id_ll" name="ID_LL">
+            </div>
+          
+            <div class="form-group">
+              <label for="ca_nghi">Chọn ca nghỉ:</label>
+              <select name="ca_nghi" id="ca_nghi" onchange="updateCaNghi(this)">
+                <option value="CA_1">Ca 1</option>
+                <option value="CA_2">Ca 2</option>
+                <option value="CA_3">Ca 3</option>
+              </select>
+              <input type="hidden" id="calamuonnghi" name="CALAMMUONNGHI">
+            </div>
+          
+            <div class="form-group">
+              <label for="mota">Lý do xin nghỉ:</label>
+              <textarea class="form-control" id="mota" name="mota" rows="4"></textarea>
+            </div>
+            
+            <button type="submit" class="btn-bt">Gửi yêu cầu</button>
+          </form>
+
+
+        </div>
+        <div class="col">
+          <h2>Thông báo</h2>
+          <h5>Chú thích</h5>
+          <div class="display-flex">
+            <p style="color: #333; display: contents;"> chờ xác nhận:&nbsp;
+            <div style="background-color: #65baa9; width: 20px; height: 20px;">&nbsp;</div>
+            </p>
+            <p style="color: #333; display: contents;"> từ chối:&nbsp;
+            <div style="background-color: #9d0000; width: 20px; height: 20px;">&nbsp;</div>
+            </p>
+            <p style="color: #333; display: contents;"> đã xác nhận:&nbsp;
+            <div style="background-color: #836fa1; width: 20px; height: 20px;">&nbsp;</div>
+            </p>
+          </div>
+          <% if (yeucauthayca.length === 0) { %>
+            <p>Hiện tại không có yêu cầu thay ca nào.</p>
+          <% } else { %>
+            <% yeucauthayca.forEach(function(item) { %>
+              <% if (item.NHANVIEN_YEUCAU == idNhanVien) { %>
+                <div class="table--hd mt-4">
+                  <% if (item.XACNHAN_QL == 0 && item.XACNHAN_NVTC != 2 || item.XACNHAN_NVTC == 0 && item.XACNHAN_NVTC != 2) { %>
+                    <div class="table--hd__title trangthai-xac-nhan">
+                      <span class="trangthai--hd" style="background-color: ghostwhite;"></span>
+                      <div>&nbsp;</div>
+                      <div>Ngày làm: <%= new Date(item.NGAY_L).toLocaleDateString('vi-VN') %></div>
+                      <span style="margin-left: auto;">Đang chờ</span>
+                    </div>
+                  <% } else if (item.XACNHAN_QL == 1 && item.XACNHAN_NVTC == 1) { %>
+                    <div class="table--hd__title trangthai-da-xac-nhan">
+                      <span class="trangthai--hd" style="background-color: ghostwhite;"></span>
+                      <div>&nbsp;</div>
+                      <div>Ngày làm: <%= new Date(item.NGAY_L).toLocaleDateString('vi-VN') %></div>
+                      <span style="margin-left: auto;">Đã xác nhận</span>
+                    </div>
+                  <% } else if (item.XACNHAN_QL === 2 || item.XACNHAN_NVTC === 2){ %>
+                    <div class="table--hd__title trangthai-huy">
+                      <span class="trangthai--hd" style="background-color: ghostwhite;"></span>
+                      <div>&nbsp;</div>
+                      <div>Ngày làm: <%= new Date(item.NGAY_L).toLocaleDateString('vi-VN') %></div>
+                      <span style="margin-left: auto;">Từ chối</span>
+                    </div>
+                  <% } %>
+                  <div class="table--hd__data">
+                    <div class="table--hd__right">
+                      <div class="item--hd">Nhân viên hiện tại:</div>
+                      <div class="item--hd">Nhân viên mới:</div>
+                      <div class="item--hd">Trạng thái nhân viên:</div>
+                      <div class="item--hd">Trạng thái quản lý:</div>
+                      <div class="item--hd">Ca muốn đổi:</div>
+                      <div class="item--hd">Mô tả:</div>
+                      <% if (item.XACNHAN_NVTC === 0) { %>
+                        <div class="item--hd">Thao tác</div>
+                      <% } %>
+                    </div>
+                    <div class="table--hd__left">
+                      <div class="item--hd"><%= item.TEN_NV_CURRENT %></div>
+                      <div class="item--hd"><%= item.TEN_NV_REPLACE %></div>
+                      <div class="item--hd">
+                        <% if (item.XACNHAN_NVTC === 0) { %>
+                          <%= 'Đang chờ' %>
+                        <% } else if (item.XACNHAN_NVTC === 1) { %>
+                          <%= 'Xác nhận' %>
+                        <% } else if (item.XACNHAN_NVTC === 2) { %>
+                          <%= 'Từ chối' %>
+                        <% } %>
+                      </div>
+                      <div class="item--hd">
+                        <% if (item.XACNHAN_QL === 0) { %>
+                        <%= 'Đang chờ' %>
+                      <% } else if (item.XACNHAN_QL === 1) { %>
+                        <%= 'Xác nhận' %>
+                      <% } else if (item.XACNHAN_QL === 2) { %>
+                        <%= 'Từ chối' %>
+                      <% } %>
+                      </div>
+                      <div class="item--hd"><%= item.CALAMMUONTHAY %></div>
+                      <div class="item--hd"><%= item.MOTA %></div>
+                      <% if (item.XACNHAN_NVTC === 0) { %>
+                        <div class="item--hd">
+                          <form action="/nhanvien/yeucauthayca/xoa" method="POST">
+                            <input type="hidden" name="ID_YCTC" value="<%= item.ID_YCTC %>">
+                            <button type="submit" class="btn-xoa">Xóa</button>
+                          </form>
+                        </div>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              <% } %>
+              <% if (item.NHANVIEN_THAYCA == idNhanVien) { %>
+                <div class="mt-4">
+                  <div class="table--hd mt-4">
+                    <% if (item.XACNHAN_NVTC == 0 ) { %>
+                    <div class="table--hd__title trangthai-xac-nhan">
+                      <span class="trangthai--hd" style="background-color: ghostwhite;"></span>
+                      <div>&nbsp;</div>
+                      <div>Ngày làm: <%= new Date(item.NGAY_L).toLocaleDateString('vi-VN') %></div>
+                      <span style="margin-left: auto;"><%= item.THAOTAC %></span>
+                    </div>
+                    <% }else if (item.XACNHAN_NVTC == 1 ) { %>
+                      <div class="table--hd__title trangthai-da-xac-nhan">
+                        <span class="trangthai--hd" style="background-color: ghostwhite;"></span>
+                        <div>&nbsp;</div>
+                        <div>Ngày làm: <%= new Date(item.NGAY_L).toLocaleDateString('vi-VN') %></div>
+                        <span style="margin-left: auto;">Đã xác nhận</span>
+                      </div>
+                    <% }  else { %>
+                    <div class="table--hd__title trangthai-huy">
+                      <span class="trangthai--hd" style="background-color: ghostwhite;"></span>
+                      <div>&nbsp;</div>
+                      <div>Ngày làm: <%= new Date(item.NGAY_L).toLocaleDateString('vi-VN') %></div>
+                      <span style="margin-left: auto;">Từ chối</span>
+                    </div>
+                    <% } %>
+                    <div class="table--hd__data">
+                      <div class="table--hd__right">
+                        <div class="item--hd">Nhân viên hiện tại:</div>
+                        <div class="item--hd">Ca thay:</div>
+                        <div class="item--hd">Mô tả:</div>
+                        <% if (item.XACNHAN_NVTC == 0) { %>
+                        <div class="item--hd">Thao tác</div>
+                        <% } %>
+                      </div>
+                      <div class="table--hd__left">
+                        <div class="item--hd"><%= item.TEN_NV_CURRENT %></div>
+                        <div class="item--hd"><%= item.CALAMMUONTHAY %></div>
+                        <div class="item--hd"><%= item.MOTA %></div>
+                        <% if (item.XACNHAN_NVTC == 0) { %>
+                        <div class="item--hd">
+                          <form action="/nhanvien/yeucau/xacnhan" method="POST">
+                            <input type="hidden" name="id" value="<%= item.ID_YCTC %>">
+                            <button type="submit" class="btn-bt">Xác nhận</button>
+                          </form>
+                          <form action="/nhanvien/yeucau/huy" method="POST">
+                            <input type="hidden" name="id" value="<%= item.ID_YCTC %>">
+                            <button type="submit" class="btn-xoa">Từ chối</button>
+                          </form>
+                        </div>
+                        <% } %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% } %>
+            <% }); %>
+          <% } %>
+
+          <% if (xinNghePhep.length === 0) { %>
+            <p>Hiện tại không có yêu cầu xin nghỉ phép nào.</p>
+          <% } else { %>
+            <% xinNghePhep.forEach(function(item) { %>
+              <div class="table--hd mt-4">
+                <% if (item.XACNHAN_QL == 0) { %>
+                  <div class="table--hd__title trangthai-xac-nhan">
+                    <span class="trangthai--hd" style="background-color: ghostwhite;"></span>
+                    <div>&nbsp;</div>
+                    <div>Ngày nghỉ: <%= new Date(item.NGAY_L).toLocaleDateString('vi-VN') %></div>
+                    <span style="margin-left: auto;">Đang chờ</span>
+                  </div>
+                <% } else if (item.XACNHAN_QL == 1) { %>
+                  <div class="table--hd__title trangthai-da-xac-nhan">
+                    <span class="trangthai--hd" style="background-color: ghostwhite;"></span>
+                    <div>&nbsp;</div>
+                    <div>Ngày nghỉ: <%= new Date(item.NGAY_L).toLocaleDateString('vi-VN') %></div>
+                    <span style="margin-left: auto;">Đã xác nhận</span>
+                  </div>
+                <% } else if (item.XACNHAN_QL === 2) { %>
+                  <div class="table--hd__title trangthai-huy">
+                    <span class="trangthai--hd" style="background-color: ghostwhite;"></span>
+                    <div>&nbsp;</div>
+                    <div>Ngày nghỉ: <%= new Date(item.NGAY_L).toLocaleDateString('vi-VN') %></div>
+                    <span style="margin-left: auto;">Từ chối</span>
+                  </div>
+                <% } %>
+                <div class="table--hd__data">
+                  <div class="table--hd__right">
+                    <div class="item--hd">Mô tả:</div>
+                    <div class="item--hd">Ca làm muốn xin nghỉ:</div>
+                    <% if (item.XACNHAN_QL === 0) { %>
+                      <div class="item--hd">Thao tác</div>
+                    <% } %>
+                  </div>
+                  <div class="table--hd__left">
+                    <div class="item--hd"><%= item.MOTA %></div>
+                    <div class="item--hd"><%= item.CALAMMUONNGHI  %></div>
+                    <% if (item.XACNHAN_QL === 0) { %>
+                      <div class="item--hd">
+                        <form action="/nhanvien/xinnghiphep/xoa" method="POST">
+                          <input type="hidden" name="ID_XNP" value="<%= item.ID_XNP %>">
+                          <button type="submit" class="btn-xoa">Xóa</button>
+                        </form>
+                      </div>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            <% }); %>
+          <% } %>
+        </div>
+      </div>
+      <!-- Modal -->
+      <div id="lichlamModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <form method="POST" action="/nhanvien/yeucauthayca">
+            <input type="hidden" value="<%= idNhanVien %>" id="nhanvien_yeucau" name="NHANVIEN_YEUCAU" readonly>
+      
+            <div class="form-group">
+              <label for="id_ll">ID Lịch làm:</label>
+              <input type="text" class="form-control" id="id_ll2" name="ID_LL" value="" readonly>
+            </div>
+      
+            <div class="form-group">
+              <label for="ngay_l">Ngày làm:</label>
+              <input type="text" class="form-control" id="ngay_l_modal" name="NGAY_L" readonly>
+            </div>
+      
+            <div class="form-group">
+              <label for="calammuonthay">Ca làm muốn thay:</label>
+              <select class="form-control" id="calammuonthay" name="CALAMMUONTHAY">
+                <option value="CA_1">Ca 1</option>
+                <option value="CA_2">Ca 2</option>
+                <option value="CA_3">Ca 3</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="nhanvien_thayca">Người thay ca làm:</label>
+              <select class="form-control" id="nhanvien_thayca" name="NHANVIEN_THAYCA">
+                <% nhanviens.forEach(function(nhanvien) { %>
+                  <% if (nhanvien.ID_CV === 1 && nhanvien.ID_NV != idNhanVien) { %>
+                  <option value="<%= nhanvien.ID_NV %>"><%= nhanvien.HOTEN_NV %></option>
+                  <% } %>
+                <% }); %>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="mota">Lý do:</label>
+              <input type="text" class="form-control" id="mota" name="MOTA">
+            </div>
+            <button type="submit" class="btn-bt">Gửi yêu cầu</button>
+          </form>
+        </div>
+      </div>
+      
+
+
+
+    </div>
+
+  </body>
+  <script>
+    // Cập nhật ID lịch làm khi chọn ngày nghỉ
+    function updateIDLL(select) {
+      const selectedOption = select.options[select.selectedIndex];
+      const idLL = selectedOption.getAttribute("data-id");
+      document.getElementById("id_ll").value = idLL;
+    }
+  
+    // Cập nhật ca nghỉ khi chọn ca
+    function updateCaNghi(select) {
+      const selectedCa = select.value;
+      document.getElementById("calamuonnghi").value = selectedCa;
+    }
+  </script>
+  <script>
+
+    document.getElementById('openModalButton').addEventListener('click', function (event) {
+      event.preventDefault();
+    
+      // Lấy giá trị ngày từ form
+      const ngayLam = document.getElementById('ngay_l').value;
+      
+      // Chuyển đổi sang định dạng YYYY-MM-DD
+      const date = new Date(ngayLam);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+      const day = String(date.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+    
+      // Gửi yêu cầu POST đến server để lấy lịch làm việc
+      fetch('/nhanvien/lichlamchinhthuc/timlichlam', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ngay_l: formattedDate })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.length > 0) {
+            // Hiển thị dữ liệu lịch làm trong modal
+            document.getElementById('id_ll2').value = data[0].ID_LL; // Cập nhật ID lịch làm từ dữ liệu trả về
+            document.getElementById('ngay_l_modal').value = formattedDate; // Ngày làm
+            
+            // Mở modal
+            document.getElementById('lichlamModal').style.display = 'block';
+          } else {
+            alert('Không tìm thấy lịch làm việc cho ngày đã chọn.');
+          }
+        })
+        .catch(error => console.error('Lỗi khi lấy lịch làm:', error));
+    });
+    
+    // Đóng modal khi nhấn vào nút close
+    document.querySelector('.close').addEventListener('click', function () {
+      document.getElementById('lichlamModal').style.display = 'none';
+    });
+    
+    // Đóng modal khi nhấp bên ngoài modal
+    window.onclick = function (event) {
+      var modal = document.getElementById("lichlamModal");
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+    </script>
+    
+
+
+  <%- include('../partials/nv_trangcuoi') %>

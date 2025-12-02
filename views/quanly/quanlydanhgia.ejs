@@ -1,0 +1,53 @@
+<%- include('../partials/ql_trangdau') %>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <h1 class="mb-4 mt-4">Quản lý Đánh giá và Bình luận</h1>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Khách hàng</th>
+                            <th>Sản phẩm</th>
+                            <th>Hạng đánh giá</th>
+                            <th>Bình luận</th>
+                            <th>Ngày đánh giá</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reviews.forEach(review=> { %>
+                            <tr>
+                                <td>
+                                    <%= review.ID_DG %>
+                                </td>
+                                <td>
+                                    <%= review.TEN_KH %>
+                                </td>
+                                <td>
+                                    <%= review.TEN_SP %>
+                                </td>
+                                <td>
+                                    <%= review.HANG_DG %>
+                                </td>
+                                <td>
+                                    <%= review.BINHLUAN_DG %>
+                                </td>
+                                <td>
+                                    <%= new Date(review.NGAY_DG).toLocaleDateString('vi-VN') %>
+                                </td>
+                                <td>
+                                    <form action="/quanly/quanlydanhgia/xoa/<%= review.ID_DG %>" method="POST"
+                                        style="display:inline;">
+                                        <button type="submit" class="btn-xoa">Xóa</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+    <%- include('../partials/ql_trangcuoi') %>

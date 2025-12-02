@@ -1,0 +1,80 @@
+<%- include('../partials/ql_trangdau') %>
+
+<body>
+  <div class="container ">
+    <div class="row">
+      <h1 class="mt-4">Quản lý nguyên liệu</h1>
+      <div class="col">
+        <div class="mt-4">
+          <h2>Tìm kiếm nguyên liệu</h2>
+          <form action="/quanly/quanlynguyenlieu/timkiem" method="GET" class="form-inline">
+            <div style="display: flex;">
+              <div class="form-group mr-2">
+                <input type="text" name="tukhoa" placeholder="Từ khóa" class="">
+              </div>
+              <button style="margin-left: 8px;" type="submit" class="btn-bt btn-40h">Tìm kiếm</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col chuyendoi">
+        <div class="mt-4">
+          <h2>Thêm nguyên liệu</h2>
+          <form action="/quanly/quanlynguyenlieu/them" method="POST" enctype="multipart/form-data" class="form-inline">
+            <div class="form-group mr-2">
+              <label for="ten_knl"> <p>Nguyên liệu:</p></label>
+              <input type="text" name="ten_knl" placeholder="Tên nguyên liệu" required class="">
+            </div>
+            <div class="form-group mr-2">
+              <label for="ten_knl"> <p>Dung tích:</p></label>
+              <input type="text" name="dung_tich_knl" placeholder="Dung tích(ml) nguyên liệu" required class=""> 
+            </div>
+            <div class="form-group mr-2">
+              <label for="ten_knl"> <p>Ảnh nguyên liệu:</p></label>
+              <input style="color: black; width: 200px;" type="file" name="anh_knl" accept="image/*" required class="form-control-file">
+              <button type="submit" class="btn-bt">Thêm</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4">
+      <h2>Danh sách nguyên liệu</h2>
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Dung tích (ml)</th>
+            <th>Ảnh</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% nguyenlieu.forEach(function(item) { %>
+            <form action="/quanly/quanlynguyenlieu/sua/<%= item.ID_NL %>" method="POST" enctype="multipart/form-data">
+              <tr>
+                <td><input type="text" name="id_knl" value="<%= item.ID_NL %>" readonly class="" style="width: 70px;"></td>
+                <td><input type="text" name="ten_knl" value="<%= item.TEN_NL %>" class=""></td>
+                <td><input type="text" name="dung_tich_knl" value="<%= item.DUNG_TICH_NL %>" class=""></td>
+                <td>
+                  <% if (item.ANH_NL) { %>
+                    <img src="<%= item.ANH_NL %>" alt="Ảnh nguyên liệu" style="max-width: 100px; max-height: 100px;" class="img-thumbnail">
+                  <% } else { %>
+                    Không có ảnh
+                  <% } %>
+                  <input type="file" name="anh_knl" accept="image/*" class="form-control-file">
+                </td>
+                <td>
+                  <button type="submit" class="btn-bt">Sửa</button>
+                </td>
+              </tr>
+            </form>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+
+<%- include('../partials/ql_trangcuoi') %>

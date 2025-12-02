@@ -1,0 +1,99 @@
+<%- include('partials/trangdau') %>
+<style>
+    .col form{
+        display: grid;
+    }
+    .col form label,.col form input{
+       width: 100%;
+    }
+    .message-box {
+        margin-top: 15px;
+        padding: 15px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-family: Arial, sans-serif;
+        position: relative; /* Để có thể sử dụng vị trí tuyệt đối cho biểu tượng nếu cần */
+        transition: all 0.3s ease-in-out; /* Hiệu ứng chuyển tiếp mượt mà */
+    }
+  
+    .message-box::before {
+        content: "";
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+  
+    /* Khi thông báo thành công */
+    .message-box.success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+  
+    .message-box.success::before {
+        background-color: #28a745; /* Màu xanh cho thông báo thành công */
+    }
+  
+    /* Khi thông báo lỗi */
+    .message-box.error {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+  
+    .message-box.error::before {
+        background-color: #dc3545; /* Màu đỏ cho thông báo lỗi */
+    }
+</style>
+<body>
+    <div class="container">
+      <div class="row">
+        <!-- Form Quên Mật Khẩu -->
+        <div class="col">
+          <h1>Quên Mật Khẩu</h1>
+          <!-- Hiển thị thông báo từ server cho quên mật khẩu -->
+          <% if (message1) { %>
+            <div class="message-box <%= success1 ? 'success' : 'error' %>">
+              <%= message1 %>
+            </div>
+          <% } %>
+  
+          <form id="forgotPasswordForm" action="/quenmatkhau" method="POST">
+            <label for="email">Nhập Gmail của bạn:</label>
+            <input type="email" name="email" id="email" required placeholder="nhập Gmail của bạn">
+            <button type="submit" class="btn-bt">Lấy mã xác nhận</button>
+          </form>
+        </div>
+  
+        <!-- Form Đổi Mật Khẩu -->
+        <div class="col">
+          <h2>Đổi Mật Khẩu</h2>
+          <!-- Hiển thị thông báo từ server cho xác nhận mật khẩu -->
+          <% if (message2) { %>
+            <div class="message-box <%= success2 ? 'success' : 'error' %>">
+              <%= message2 %>
+            </div>
+          <% } %>
+  
+          <form id="resetPasswordForm" action="/xacnhanmatkhau" method="POST">
+            <label for="code">Nhập mã xác nhận:</label>
+            <input type="text" name="code" id="code" required placeholder="Mã xác nhận">
+            <label for="new_password">Nhập mật khẩu mới:</label>
+            <input type="password" name="new_password" id="new_password" required placeholder="Mật khẩu mới">
+            <label for="confirm_password">Xác nhận mật khẩu mới:</label>
+            <input type="password" name="confirm_password" id="confirm_password" required placeholder="Xác nhận mật khẩu">
+            <button type="submit" class="btn-xoa">Xác nhận</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+  
+  
+
+<%- include('partials/trangcuoi') %>

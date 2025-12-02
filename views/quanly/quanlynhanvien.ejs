@@ -1,0 +1,187 @@
+<%- include('../partials/ql_trangdau') %>
+    <!-- CSS -->
+    <style>
+      .text-success {
+        color: green;
+      }
+      .text-danger {
+        color: red;
+      }
+      .btn-khoa.disabled {
+        background-color: red;
+        cursor: not-allowed;
+        
+      }
+      .btn-khoa{
+        margin-top: 9px;
+        background-color: red;
+        color: white;
+      }
+    </style>
+<body>
+  <div class="container ">
+    <!-- Danh sách nhân viên -->
+    <div class="row">
+      <h1 class="mt-4">Quản lý nhân viên</h1>
+      <div class="col">
+       <div class="mt-4">
+        <h2>Tìm kiếm nhân viên</h2>
+        <form action="/quanly/nhanvien/timkiem" method="GET" class="form-inline mb-4">
+          <div class="form-group">
+            <input type="text" name="tukhoa" placeholder="Từ khóa" class=" mr-2" required>
+            <button type="submit" class="btn-bt">Tìm kiếm</button>
+          </div>
+        </form>
+       </div>
+      </div>
+      <div class="col chuyendoi">
+      <div class="mt-4">
+        <h2>Thêm nhân viên</h2>
+      </div>
+      </div>
+          <form action="/quanly/nhanvien/them" method="POST" class="mb-4">
+            <div class="row">
+              <div class="form-group col-md-4">
+                <label for="taikhoan">Tài khoản</label>
+                <input type="text" name="taikhoan" id="taikhoan" placeholder="Tài khoản" required class="form-control">
+              </div>
+              
+              <div class="form-group col-md-4">
+                <label for="matkhau">Mật khẩu</label>
+                <input type="password" name="matkhau" id="matkhau" placeholder="Mật khẩu" required class="form-control">
+              </div>
+              
+              <div class="form-group col-md-4">
+                <label for="sodienthoai">Số điện thoại</label>
+                <input type="text" name="sodienthoai" id="sodienthoai" placeholder="Số điện thoại" required class="form-control">
+              </div>
+              
+              <div class="form-group col-md-4">
+                <label for="gmail">Gmail</label>
+                <input type="email" name="gmail" id="gmail" placeholder="Gmail" required class="form-control">
+              </div>
+              
+              <div class="form-group col-md-4">
+                <label for="gioitinh">Giới tính</label>
+                <select name="gioitinh" id="gioitinh" required class="form-control">
+                  <option value="Nam">Nam</option>
+                  <option value="Nữ">Nữ</option>
+                  <option value="Khác">Khác</option>
+                </select>
+              </div>
+              
+              <div class="form-group col-md-4">
+                <label for="namsinh">Năm sinh</label>
+                <input type="date" name="namsinh" id="namsinh" class="form-control">
+              </div>
+              
+              <div class="form-group col-md-4">
+                <label for="hoten">Họ tên</label>
+                <input type="text" name="hoten" id="hoten" placeholder="Họ tên" required class="form-control">
+              </div>
+              
+              <div class="form-group col-md-4">
+                <label for="quequan">Quê quán</label>
+                <input type="text" name="quequan" id="quequan" placeholder="Quê quán" required class="form-control">
+              </div>
+              
+              <div class="form-group col-md-4">
+                <label for="id_cv">Chức vụ</label>
+                <select name="id_cv" id="id_cv" class="form-control">
+                  <option value="1">Nhân viên</option>
+                  <option value="2">Quản lý</option>
+                </select>
+              </div>
+              
+            </div>
+            <button type="submit" class="btn-bt" style="right: 0;">Thêm</button>
+          </form>
+ 
+        
+
+    </div>
+    <h2>Danh sách nhân viên</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Tài khoản</th>
+          <th>Mật khẩu</th>
+          <th>Số điện thoại</th>
+          <th>Gmail</th>
+          <th>Giới tính</th>
+          <th>Họ tên</th>
+          <th>Quê quán</th>
+          <th>Chức vụ</th>
+          <th>Trạng thái</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% nhanviens.forEach(function(nhanvien) { %>
+          <tr>
+            <td><%= nhanvien.TAIKHOAN_NV %></td>
+            <td>
+              <input style="width: 80px;" type="password" value="<%= nhanvien.MATKHAU_NV.length > 10 ? nhanvien.MATKHAU_NV.slice(0, 10) + '...' : nhanvien.MATKHAU_NV %>" class="form-control" readonly maxlength="10">
+            </td>
+            <td><%= nhanvien.SODIENTHOAI_NV %></td>
+            <td><%= nhanvien.GMAIL_NV %></td>
+            <td><%= nhanvien.GIOITINH_NV %></td>
+            <td><%= nhanvien.HOTEN_NV %></td>
+            <td><%= nhanvien.QUEQUAN_NV %></td>
+            <td>
+              <select class="form-control">
+                <option value="1" <% if (nhanvien.ID_CV === 1) { %> selected <% } %>>Nhân viên</option>
+                <option value="2" <% if (nhanvien.ID_CV === 2) { %> selected <% } %>>Quản lý</option>
+              </select>
+            </td>
+            <td>
+              <span class="<%= nhanvien.trangthai === 'locked' ? 'text-danger' : 'text-success' %>">
+                <%= nhanvien.trangthai === 'locked' ? 'Đã khóa' : 'Đang hoạt động' %>
+              </span>
+            </td>
+            <td>
+              <form action="/quanly/nhanvien/sua/<%= nhanvien.ID_NV %>" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-bt">Sửa</button>
+              </form>
+              <form action="/quanly/nhanvien/khoa/<%= nhanvien.ID_NV %>" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-khoa <%= nhanvien.trangthai === 'locked' ? 'disabled' : '' %>">
+                  <%= nhanvien.trangthai === 'locked' ? 'Đã khóa' : 'Khóa' %>
+                </button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    
+
+    
+    <!-- JavaScript -->
+    <script>
+      // Sử dụng JavaScript để thay đổi trạng thái nút và cập nhật giao diện khi người dùng nhấn "Khóa"
+      const lockButtons = document.querySelectorAll('.btn-khoa');
+    
+      lockButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          const buttonText = this.innerText;
+          
+          if (buttonText === 'Khóa') {
+            // Cập nhật trạng thái thành "Đã khóa" và thay đổi màu sắc
+            this.innerText = 'Đã khóa';
+            this.classList.add('disabled');
+            this.classList.remove('btn-khoa');
+            this.classList.add('btn-secondary');
+            
+            const row = this.closest('tr');
+            const statusCell = row.querySelector('td:nth-child(9)');
+            statusCell.innerHTML = '<span class="text-danger">Đã khóa</span>';
+          }
+        });
+      });
+    </script>
+    
+  </div>
+</body>
+
+<%- include('../partials/ql_trangcuoi') %>

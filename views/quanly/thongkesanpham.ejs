@@ -1,0 +1,154 @@
+<%- include('../partials/ql_trangdau') %>
+    <div class="container">
+        <div class="row">
+            <h1>Thống kê sản phẩm</h1>
+            <div class="col">
+                <div class="mt-4">
+                    <h2 class="mt-4">Chọn tháng</h2>
+                    <form action="/quanly/thongkesanpham" method="GET">
+                        <label for="month" style="margin: 0;width: auto;">Tháng:</label>
+                        <select id="month" name="month">
+                          <% for (let i = 1; i <= 12; i++) { %>
+                            <option value="<%= i %>" <%= i == month ? 'selected' : (i == new Date().getMonth() + 1 ? 'selected' : '') %>><%= i %></option>
+                          <% } %>
+                        </select>
+                        <label for="year" style="margin: 0; width: auto;">Năm:</label>
+                        <select id="year" name="year">
+                          <% for (let i = new Date().getFullYear() - 10; i <= new Date().getFullYear(); i++) { %>
+                            <option value="<%= i %>" <%= i == year ? 'selected' : '' %>><%= i %></option>
+                          <% } %>
+                        </select>
+                        <button type="submit" class="btn-bt">Xem Thống Kê</button>
+                      </form>
+                </div>
+            </div>
+            <div class="col chuyendoi">
+                <div class="mt-4">
+                    <h2 class="mt-4">Tổng quan</h2>
+                </div>
+            </div>
+        </div>
+        <!-- Hiển thị kết quả thống kê -->
+        <div class="row">
+            <div class="col">
+                <div class="mt-4">
+                    <h5>Thông kê đánh giá</h5>
+                    <canvas id="reviewsChart"></canvas>
+                </div>
+            </div>
+            <div class="col ">
+                <div class="row main--yeuthich" style="max-height: 300px;">
+                    <div class="col mau333">
+                        <h5>Sản phẩm đã bán</h5>
+                        <% sales.forEach(function(sale) { %>
+                            <p><span> <%= sale.TEN_SP %></span><span> <%= sale.TONG_SO_LUONG_BAN %></span></p>
+                        <% }); %>
+                       
+                    </div>
+                    <div class="col mau333">
+                        <h5> Sản phẩm được đánh giá</h5>
+                        <% reviews.forEach(function(review) { %>
+                            <p><span> <%= review.TEN_SP %><%= review.TONG_SO_LUONG_DANH_GIA %></span></p>
+                            <% }); %>
+                    </div>
+                </div>  
+            </div>
+        </div>
+        <h5>Thống kê hoạt động sản phẩm </h5>
+        <canvas id="salesChart"></canvas>
+        
+        <!-- Thêm bảng thống kê -->
+        <div class="mt-4">
+            <h5>Bảng thống kê chi tiết</h5>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Tên sản phẩm</th>
+                        <th>Số lượng bán</th>
+                        <th>Số lượng đánh giá</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% sales.forEach(function(sale) { 
+                        const review = reviews.find(r => r.TEN_SP === sale.TEN_SP);
+                    %>
+                    <tr>
+                        <td>
+                            <input type="text" value="<%= sale.TEN_SP %>" readonly style="width: 150px;">
+                        </td>
+                        <td>
+                            <input type="text" value="<%= sale.TONG_SO_LUONG_BAN %>" readonly style="width: 150px;">
+                        </td>
+                        <td>
+                            <input type="text" value="<%= review ? review.TONG_SO_LUONG_DANH_GIA : 0 %>" readonly style="width: 150px;">
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Dữ liệu cho biểu đồ số lượng bán
+        const salesData = {
+            labels: <%- JSON.stringify(sales.map(item => item.TEN_SP)) %>,
+            datasets: [{
+                label: 'Số lượng bán',
+                data: <%- JSON.stringify(sales.map(item => item.TONG_SO_LUONG_BAN)) %>,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        // Cấu hình biểu đồ số lượng bán
+        const salesConfig = {
+            type: 'bar',
+            data: salesData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        // Khởi tạo biểu đồ số lượng bán
+        const salesChart = new Chart(
+            document.getElementById('salesChart'),
+            salesConfig
+        );
+
+        // Dữ liệu cho biểu đồ số lượng đánh giá
+        const reviewsData = {
+            labels: <%- JSON.stringify(reviews.map(item => item.TEN_SP)) %>,
+            datasets: [{
+                label: 'Số lượng đánh giá',
+                data: <%- JSON.stringify(reviews.map(item => item.TONG_SO_LUONG_DANH_GIA)) %>,
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        // Cấu hình biểu đồ số lượng đánh giá
+        const reviewsConfig = {
+            type: 'bar',
+            data: reviewsData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+        // Khởi tạo biểu đồ số lượng đánh giá
+        const reviewsChart = new Chart(
+            document.getElementById('reviewsChart'),
+            reviewsConfig
+        );
+    </script>
+    <%- include('../partials/ql_trangcuoi') %>

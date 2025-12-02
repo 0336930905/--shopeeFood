@@ -1,0 +1,176 @@
+<%- include('../partials/ql_trangdau') %>
+
+<div class="container">
+  <div class="row">
+    <h1>Thống kê nhân viên</h1>
+    <div class="col-5">
+      <div class="mt-4">
+        <h2 class="mt-4">Chọn tháng</h2>
+        <form action="/quanly/thongkenhanvien" method="GET">
+          <span for="month">tháng:</span>
+          <select id="month" name="month">
+            <% for (let i = 1; i <= 12; i++) { %>
+              <option value="<%= i %>" <%= i == currentMonth ? 'selected' : '' %>><%= i %></option>
+            <% } %>
+          </select>
+          <span for="year">năm:</span>
+          <select id="year" name="year">
+            <% for (let i = currentYear - 10; i <= currentYear; i++) { %>
+              <option value="<%= i %>" <%= i == currentYear ? 'selected' : '' %>><%= i %></option>
+            <% } %>
+          </select>
+          <button type="submit" class="btn-bt">Xem Thống Kê</button>
+        </form>
+      </div>
+    </div>
+    <div class="col-7 chuyendoi">
+      <div class="mt-4">
+        <h2 class="mt-4">Tổng quan</h2>
+      </div>
+    </div>
+  </div>
+  <!-- Hiển thị kết quả thống kê -->
+  <div class="row">
+    <div class="col">
+      <div class="mt-4">
+        <h5>Thống kê hoạt động bán</h5>
+        <canvas id="invoiceChart"></canvas>
+      </div>
+    </div>
+    <div class="col ">
+     <div style="border: solid 1px #ccc;" class="mau333">
+      <p>Tổng số nhân viên: <span><%= totalEmployees %></span></p>
+      <p>Tổng số ngày làm việc trong tháng: <span><%= totalWorkingDays %></span></p>
+      <p>Tổng số hóa đơn đã xác nhận: <span><%= totalConfirmedInvoices %></span></p>
+      <p>Tổng số sản phẩm đã bán: <span><%= totalSoldProducts %></span></p>
+     </div>
+      <div class="mt-4">
+        <h5>Thống kê hoạt động làm việc</h5>
+        <canvas id="workStatsChart"></canvas>
+      </div>
+    </div>
+    <div class="col-12">
+      <canvas id="luongChart"></canvas>
+    </div>
+  </div>
+ 
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Kiểm tra và lấy dữ liệu từ server, nếu không có thì trả về mảng rỗng
+  const employeeNames = <%- JSON.stringify(results1 ? results1.map(result => result.HOTEN_NV) : []) %>;
+  const invoiceConfirmedData = <%- JSON.stringify(results2 ? results2.map(result => result.TONG_SO_HOA_DON_DA_XAC_NHAN) : []) %>;
+  const invoiceCanceledData = <%- JSON.stringify(results2 ? results2.map(result => result.TONG_SO_HOA_DON_DA_HUY) : []) %>;
+  const soldProductsData = <%- JSON.stringify(results2 ? results2.map(result => result.TONG_SOLUONG_SANPHAM_DA_BAN) : []) %>;
+  const totalWorkingDaysData = <%- JSON.stringify(results1 ? results1.map(result => result.TONG_SO_NGAY_LAM) : []) %>;
+  const totalCheckInsData = <%- JSON.stringify(results1 ? results1.map(result => result.TONG_SO_LAN_CHAM_CONG) : []) %>;
+  const lateArrivalsData = <%- JSON.stringify(results1 ? results1.map(result => result.TONG_SO_LAN_DI_TRE) : []) %>;
+  const salariesData = <%- JSON.stringify(results3 ? results3.map(r => r.TONG_L) : []) %>;
+
+  // Biểu đồ thống kê hóa đơn
+  const invoiceData = {
+    labels: employeeNames,
+    datasets: [
+      {
+        label: 'Hóa đơn đã xác nhận',
+        data: invoiceConfirmedData,
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+      },
+      {
+        label: 'Hóa đơn đã hủy',
+        data: invoiceCanceledData,
+        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+      },
+      {
+        label: 'Tổng số ly đã bán',
+        data: soldProductsData,
+        backgroundColor: 'rgba(153, 102, 255, 0.6)',
+      }
+    ]
+  };
+
+  const invoiceConfig = {
+    type: 'bar',
+    data: invoiceData,
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  };
+
+  const invoiceChart = new Chart(
+    document.getElementById('invoiceChart'),
+    invoiceConfig
+  );
+
+  // Biểu đồ thống kê số ngày làm và số lần chấm công cùng số lần đi trễ
+  const workStatsData = {
+    labels: employeeNames,
+    datasets: [
+      {
+        label: 'Tổng số ngày làm',
+        data: totalWorkingDaysData,
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+      },
+      {
+        label: 'Tổng số lần chấm công',
+        data: totalCheckInsData,
+        backgroundColor: 'rgba(255, 206, 86, 0.6)',
+      },
+      {
+        label: 'Tổng số lần đi trễ',
+        data: lateArrivalsData,
+        backgroundColor: 'rgba(255, 159, 64, 0.6)',
+      }
+    ]
+  };
+
+  const workStatsConfig = {
+    type: 'bar',
+    data: workStatsData,
+    options: {
+      indexAxis: 'y',
+      scales: {
+        x: {
+          beginAtZero: true
+        }
+      }
+    }
+  };
+
+  const workStatsChart = new Chart(
+    document.getElementById('workStatsChart'),
+    workStatsConfig
+  );
+
+  // Biểu đồ thống kê lương
+  const ctx = document.getElementById('luongChart').getContext('2d');
+
+  const luongChart = new Chart(ctx, {
+    type: 'bar', // Thay đổi 'horizontalBar' thành 'bar' do 'horizontalBar' đã bị loại bỏ trong Chart.js 3.x
+    data: {
+      labels: employeeNames, // Nhãn là tên nhân viên
+      datasets: [{
+        label: 'Tổng lương',
+        data: salariesData, // Dữ liệu là tổng lương
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        x: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+
+
+<%- include('../partials/ql_trangcuoi') %>

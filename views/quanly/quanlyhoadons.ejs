@@ -1,0 +1,196 @@
+<%- include('../partials/ql_trangdau') %>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h2 class="mt-4">Lịch sử hóa đơn</h2>
+    </div>
+    <div class="col chuyendoi">
+      <h2 class="mt-4">Hóa đơn đã hủy</h2>
+      <div class="mt-4">
+
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="mt-4">
+        <form method="GET" action="/quanly/quanlyhoadons" class="form-inline justify-content-center mb-4">
+          <div class="input-group w-auto">
+              <div class="input-group-prepend">
+                  <label for="month" class="input-group-text">Chọn tháng:</label>
+              </div>
+              <select id="month" name="month" required class="form-control">
+                  <option value="">Chọn tháng</option>
+                  <% for (var i = 1; i <= 12; i++) { %>
+                      <option value="<%= i %>">Tháng <%= i %></option>
+                  <% } %>
+              </select>
+        
+              <div class="input-group-prepend">
+                  <label for="year" class="input-group-text">Chọn năm:</label>
+              </div>
+              <select id="year" name="year" required class="form-control">
+                  <option value="">Chọn năm</option>
+                  <% for (var y = 2020; y <= new Date().getFullYear(); y++) { %>
+                      <option value="<%= y %>"><%= y %></option>
+                  <% } %>
+              </select>
+              <div class="input-group-append">
+                  <button type="submit" class="btn-bt" style="margin-top: auto;">Xem</button>
+              </div>
+          </div>
+        </form>
+      </div>
+      <div class="mt-4">
+        <% 
+        // Hàm định dạng tiền tệ
+        function formatCurrency(amount) {
+          let number = parseFloat(amount);
+          if (isNaN(number)) {
+            return '0 đ';
+          }
+          return new Intl.NumberFormat('vi-VN', { style: 'decimal', currency: 'VND' }).format(number);
+        }
+        
+        // Hàm định dạng danh sách các giá
+        function formatMultipleCurrencies(amounts) {
+          // Tách chuỗi thành mảng nếu là chuỗi phân cách bằng dấu phẩy
+          let amountArray = amounts.split(',').map(str => str.trim());
+          // Định dạng từng giá và nối chúng lại bằng dấu phẩy
+          return amountArray.map(amount => formatCurrency(amount)).join(', ');
+        } 
+      %>
+      
+      <% orders.forEach(order => { %>
+        <% if(order.TRANGTHAI != 'Đã hủy'){ %>
+        <div class="table--hd mt-4">
+          <div class="table--hd__title
+          <% if (order.TRANGTHAI === 'Chờ xác nhận') { %>
+            trangthai-xac-nhan
+          <% } else if (order.TRANGTHAI === 'Đã hủy') { %>
+            trangthai-huy
+          <% } else if (order.TRANGTHAI === 'Đã xác nhận') { %>
+            trangthai-da-xac-nhan
+          <% } %>
+        "">
+            Thông tin đơn hàng ngày: <%= new Date(order.NGAYLAP_HD).toLocaleDateString('vi-VN') %> 
+            <span style="margin-left: auto;">Mã hóa đơn: <%= order.ID_HD %></span>
+          </div>
+          <div class="table--hd__data">
+            <div class="table--hd__right">
+              <div class="item--hd">Tên nhân viên</div>
+              <div class="item--hd">Trạng thái</div>
+              <div class="item--hd">Sản phẩm</div>
+              <div class="item--hd">Tổng hóa đơn</div>
+            </div>
+            <div class="table--hd__left">
+              <div class="item--hd">
+                <div style="padding-right: 5px;"><%= order.TEN_NHANVIEN %></div>
+              </div>
+                <div class="item--hd">
+                    <div style="padding-right: 5px;"><%= order.TRANGTHAI %></div> 
+                    <span class=" trangthai--hd
+                    <% if (order.TRANGTHAI === 'Chờ xác nhận') { %>
+                      trangthai-xac-nhan
+                    <% } else if (order.TRANGTHAI === 'Đã hủy') { %>
+                      trangthai-huy
+                    <% } else if (order.TRANGTHAI === 'Đã xác nhận') { %>
+                      trangthai-da-xac-nhan
+                    <% } %>
+                  ">
+                  </span>
+                   </div>
+              <div class="item--hd">
+                <%= order.DANH_SACH_SAN_PHAM %>
+              </div>
+              <div class="item--hd">
+                <%= formatCurrency(order.TONG_HD) %> VND
+              </div>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      <% }) %>
+    </div>
+    </div>
+    <div class="col ">
+      <div class="mt-4">
+        <% 
+        // Hàm định dạng tiền tệ
+        function formatCurrency(amount) {
+          let number = parseFloat(amount);
+          if (isNaN(number)) {
+            return '0 đ';
+          }
+          return new Intl.NumberFormat('vi-VN', { style: 'decimal', currency: 'VND' }).format(number);
+        }
+        
+        // Hàm định dạng danh sách các giá
+        function formatMultipleCurrencies(amounts) {
+          // Tách chuỗi thành mảng nếu là chuỗi phân cách bằng dấu phẩy
+          let amountArray = amounts.split(',').map(str => str.trim());
+          // Định dạng từng giá và nối chúng lại bằng dấu phẩy
+          return amountArray.map(amount => formatCurrency(amount)).join(', ');
+        } 
+      %>
+      
+      <% 
+      let hasCancelledOrder = false; // Khởi tạo cờ để kiểm tra đơn hàng hủy
+    %>
+    
+    <% orders.forEach(order => { %>
+      <% if(order.TRANGTHAI === 'Đã hủy'){ %>
+      <% hasCancelledOrder = true; %> <!-- Đặt cờ nếu có đơn hàng hủy -->
+      <div class="table--hd mt-4">
+        <div class="table--hd__title trangthai-huy">
+          Thông tin đơn hàng ngày: <%= new Date(order.NGAYLAP_HD).toLocaleDateString('vi-VN') %> 
+          <span style="margin-left: auto;">Mã hóa đơn: <%= order.ID_HD %></span>
+        </div>
+        <div class="table--hd__data">
+          <div class="table--hd__right">
+            <div class="item--hd">Tên nhân viên</div>
+            <div class="item--hd">Trạng thái</div>
+            <div class="item--hd">Sản phẩm</div>
+            <div class="item--hd">Tổng hóa đơn</div>
+            <div class="item--hd">Lý do hủy</div>
+          </div>
+          <div class="table--hd__left">
+            <div class="item--hd">
+              <div style="padding-right: 5px;"><%= order.TEN_NHANVIEN %></div>
+            </div>
+            <div class="item--hd">
+              <div style="padding-right: 5px;"><%= order.TRANGTHAI %></div>
+              <span class="trangthai--hd trangthai-huy"></span>
+            </div>
+            <div class="item--hd">
+              <%= order.DANH_SACH_SAN_PHAM %>
+            </div>
+            <div class="item--hd">
+              <%= formatCurrency(order.TONG_HD) %> VND
+            </div>
+            <div class="item--hd">
+              <%= order.MOTAHUYDON || 'Không có lý do hủy' %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% } %>
+    <% }) %>
+    
+    <% if (!hasCancelledOrder) { %> <!-- Kiểm tra nếu không có đơn hàng hủy -->
+      <div class="alert alert-info mt-4">
+        Không có đơn hàng nào bị hủy trong khoảng thời gian đã chọn.
+      </div>
+    <% } %>
+    </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/ql_trangcuoi') %>
+
+<script>
+  const currentMonth = new Date().getMonth() + 1;
+  const currentYear = new Date().getFullYear();
+  document.getElementById('month').value = currentMonth;
+  document.getElementById('year').value = currentYear;
+</script>

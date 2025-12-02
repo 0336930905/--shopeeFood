@@ -1,0 +1,97 @@
+<%- include('../partials/nv_trangdau') %>
+<style>
+</style>
+<div class="container mt-5">
+    <div class="mt-4">
+        <% if (typeof successMessage !== 'undefined') { %>
+            <div class="alert alert-success">
+              <%= successMessage %>
+            </div>
+          <% } %>
+          
+        <div class="row">
+            <div class="col">
+                <div class="mt-4">
+                    <h2 class="mb-4">Tổng quan trong tháng</h2>
+                     <div class="card-tq">
+                        <div class="item item--1">
+                            <div class="quantity"> Số lần đi trễ
+                            </div>
+                            <div class="text text--1">
+                                <%= soLanDiTreTrongThang %> lần
+                            </div>
+                        </div>
+                        <div class="item item--2">
+                            <div class="quantity">Số ly đã bán
+                            </div>
+                            <div class="text text--2">
+                                <%= tongSoLyBanDuoc %> ly
+                            </div>
+                        </div>
+                        <div class="item item--3">
+                            <div class="quantity">Số đơn đã hủy
+                            </div>
+                            <div class="text text--3">
+                                <%= tongSoHoaDonHuy %> hóa đơn
+                            </div>
+                        </div>
+                            <div class="item item--4">
+                                <div class="quantity">
+                                    Số ngày đi làm
+                                </div>
+                                    <div class="text text--4">
+                                        <%= tongSoNgayLam %> ngày
+                                    </div>
+                            </div>
+                    </div>
+                     </div>
+            </div>
+            <div class="col chuyendoi">
+                <div class="mt-4">
+                    <div class="row">
+                        <h2 class="mb-4">Xem và cập nhật hồ sơ</h2>
+                        <div class="col">
+                            <form action="/nhanvien/capnhatthongtin" method="POST" enctype="multipart/form-data">
+                                <div class="form-group mb-3">
+                                    <label for="anh">Ảnh:</label>
+                                    <input type="file" id="anh" name="anh" class="form-control">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="ten">Tên nhân viên:</label>
+                                    <input type="text" id="ten" name="ten" class="form-control"
+                                           value="<%= employee.HOTEN_NV %>" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="email">Email:</label>
+                                    <input type="email" id="email" name="email" class="form-control"
+                                           value="<%= employee.GMAIL_NV %>" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="sodienthoai">Số điện thoại:</label>
+                                    <input type="text" id="sodienthoai" name="sodienthoai" class="form-control"
+                                           value="<%= employee.SODIENTHOAI_NV %>" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="quequan">Quê quán:</label>
+                                    <input type="text" id="quequan" name="quequan" class="form-control"
+                                           value="<%= employee.QUEQUAN_NV %>" required>
+                                </div>
+                                <button type="submit" class="btn-bt">Cập nhật</button>
+                            </form>
+                        </div>
+                        <div class="col">
+                            <div class="card-hs">
+                                <div class="blob"></div>
+                                <img class="img" src="<%= employee.ANH %>" alt="Ảnh nhân viên">
+                                <div>Nhân viên</div>
+                                <div class="ten_kh"><%= employee.HOTEN_NV %></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<%- include('../partials/nv_trangcuoi') %>

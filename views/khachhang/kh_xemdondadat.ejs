@@ -1,0 +1,210 @@
+<%- include('../partials/kh_trangdau') %>
+<style>
+  .chuyendoi {
+    padding: 10px;
+    z-index: 1000;
+    width: 606px;
+    height: 170px;
+    right: 126px;
+}
+
+.dangcho {
+    z-index: 1000;
+    width: 606px;
+    height: 25px;
+    right: 126px;
+}
+</style>
+<div class="container mt-4">
+  <div class="row">
+      <div class="col">
+          <div class="mt-4">
+              <h2 class="mb-4">Danh sách hóa đơn</h2>
+              <div class="dshd">
+                  <h5>Sắp xếp:</h5>
+                  <a style="--clr: #7808d0" class="button--hd trangthai-da-xac-nhan" href="/khachhang/kh_xemdondadat?trangThai=Đã xác nhận">
+                      <span class="button__icon-wrapper">
+                          <i class="fa-solid fa-check"></i>
+                      </span>
+                      Đã xác nhận
+                  </a>
+                  <a style="--clr: #7808d0" class="button--hd trangthai-huy" href="/khachhang/kh_xemdondadat?trangThai=Đã hủy">
+                      <span class="button__icon-wrapper">
+                          <i class="fa-solid fa-xmark"></i>
+                      </span>
+                      Đã hủy
+                  </a>
+                  <a style="--clr: #7808d0" class="button--hd" href="/khachhang/kh_xemdondadat">
+                      <span class="button__icon-wrapper">
+                          <i class="fa-solid fa-sort"></i>
+                      </span>
+                      Tất cả
+                  </a>
+              </div>
+          </div>
+      </div>
+      <div class="col chuyendoi">
+          <div class="mt-4">
+              <h2 class="mb-4">Hóa đơn đang chờ</h2>
+          </div>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col">
+          <div class="mt-4">
+              <% 
+              // Hàm định dạng tiền tệ
+              function formatCurrency(amount) {
+                let number = parseFloat(amount);
+                if (isNaN(number)) {
+                  return '0 đ';
+                }
+                return new Intl.NumberFormat('vi-VN', { style: 'decimal', currency: 'VND' }).format(number);
+              }
+              
+              // Hàm định dạng danh sách các giá
+              function formatMultipleCurrencies(amounts) {
+                let amountArray = amounts.split(',').map(str => str.trim());
+                return amountArray.map(amount => formatCurrency(amount)).join(', ');
+              } 
+              %>
+              
+              <% orders.forEach(order => { %>
+              <div class="table--hd mt-4">
+                  <div class="table--hd__title
+                  <% if (order.TRANGTHAI === 'Chờ xác nhận') { %>
+                      trangthai-xac-nhan
+                  <% } else if (order.TRANGTHAI === 'Đã hủy') { %>
+                      trangthai-huy
+                  <% } else if (order.TRANGTHAI === 'Đã xác nhận') { %>
+                      trangthai-da-xac-nhan
+                  <% } %>
+                  ">
+                      Thông tin đơn hàng ngày: <%= new Date(order.NGAYLAP_HD).toLocaleDateString('vi-VN') %> 
+                      <span style="margin-left: auto;">Mã hóa đơn: <%= order.ID_HD %></span>
+                  </div>
+                  <div class="table--hd__data">
+                      <div class="table--hd__right">
+                          <div class="item--hd">Trạng thái</div>
+                          <div class="item--hd">Sản phẩm</div>
+                          <div class="item--hd">Tổng hóa đơn</div>
+                      </div>
+                      <div class="table--hd__left">
+                          <div class="item--hd">
+                              <div style="padding-right: 5px;"><%= order.TRANGTHAI %></div> 
+                              <span class="trangthai--hd
+                              <% if (order.TRANGTHAI === 'Chờ xác nhận') { %>
+                                  trangthai-xac-nhan
+                              <% } else if (order.TRANGTHAI === 'Đã hủy') { %>
+                                  trangthai-huy
+                              <% } else if (order.TRANGTHAI === 'Đã xác nhận') { %>
+                                  trangthai-da-xac-nhan
+                              <% } %>
+                              ">
+                              </span>
+                          </div>
+                          <div class="item--hd">
+                              <%= order.DANH_SACH_SAN_PHAM %>
+                          </div>
+                          <div class="item--hd">
+                              <%= formatCurrency(order.TONG_HD) %> VND
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <% }) %>
+          </div>
+      </div>
+      <div class="col">
+        <div class="mt-4 dangcho">
+            <% 
+            // Hàm định dạng tiền tệ
+            function formatCurrency(amount) {
+              let number = parseFloat(amount);
+              if (isNaN(number)) {
+                return '0 đ';
+              }
+              return new Intl.NumberFormat('vi-VN', { style: 'decimal', currency: 'VND' }).format(number);
+            }
+            
+            // Hàm định dạng danh sách các giá
+            function formatMultipleCurrencies(amounts) {
+              let amountArray = amounts.split(',').map(str => str.trim());
+              return amountArray.map(amount => formatCurrency(amount)).join(', ');
+            } 
+            %>
+    
+            <!-- Kiểm tra xem có hóa đơn nào không -->
+            <% if (pendingOrders.length > 0) { %>
+                <% pendingOrders.forEach(order => { %>
+                <div class="table--hd mt-4">
+                    <div class="table--hd__title trangthai-xac-nhan">
+                        Thông tin đơn hàng ngày: <%= new Date(order.NGAYLAP_HD).toLocaleDateString('vi-VN') %> 
+                        <span style="margin-left: auto;">Mã hóa đơn: <%= order.ID_HD %></span>
+                    </div>
+                    <div class="table--hd__data">
+                        <div class="table--hd__right">
+                            <div class="item--hd">Trạng thái</div>
+                            <div class="item--hd">Sản phẩm</div>
+                            <div class="item--hd">Tổng hóa đơn</div>
+                        </div>
+                        <div class="table--hd__left">
+                            <div class="item--hd">
+                                <div style="padding-right: 5px;"><%= order.TRANGTHAI %></div> 
+                                <span class="trangthai--hd
+                                <% if (order.TRANGTHAI === 'Chờ xác nhận') { %>
+                                    trangthai-xac-nhan
+                                <% } else if (order.TRANGTHAI === 'Đã hủy') { %>
+                                    trangthai-huy
+                                <% } else if (order.TRANGTHAI === 'Đã xác nhận') { %>
+                                    trangthai-da-xac-nhan
+                                <% } %>
+                                ">
+                                </span>
+                            </div>
+                            <div class="item--hd">
+                                <%= order.DANH_SACH_SAN_PHAM %>
+                            </div>
+                            <div class="item--hd">
+                                <%= formatCurrency(order.TONG_HD) %> VND
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% }) %>
+            <% } else { %>
+                <!-- Thông báo khi không có hóa đơn nào chờ -->
+                <div class="alert alert-info " role="alert">
+                    Không có hóa đơn chờ nào.
+                </div>
+            <% } %>
+        </div>
+    </div>
+  </div>
+</div>
+
+    <script>
+        function equalizeHeights() {
+            const rightItems = document.querySelectorAll('.table--hd__right .item--hd');
+            const leftItems = document.querySelectorAll('.table--hd__left .item--hd');
+
+            rightItems.forEach((item, index) => {
+                const leftItem = leftItems[index];
+                if (leftItem) {
+                    const maxHeight = Math.max(item.offsetHeight, leftItem.offsetHeight);
+                    item.style.height = `${maxHeight}px`;
+                    leftItem.style.height = `${maxHeight}px`;
+                }
+            });
+        }
+
+        // Chạy hàm khi trang đã tải xong
+        document.addEventListener('DOMContentLoaded', equalizeHeights);
+
+        // Chạy lại hàm khi cửa sổ thay đổi kích thước
+        window.addEventListener('resize', equalizeHeights);
+        //
+        
+    </script>
+
+    <%- include('../partials/kh_trangcuoi') %>

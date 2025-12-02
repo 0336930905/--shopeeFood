@@ -1,0 +1,108 @@
+<%- include('../partials/ql_trangdau') %>
+
+<body>
+    <div class="container ">
+        <!-- Form Thêm Công Thức -->
+        <div class="row">
+        <h1 class="mt-4">Quản lý công thức</h1>
+            <div class="col">
+                <div class="mt-4">
+                    <h2>Tìm kiếm công thức</h2>
+                    <form action="/quanly/quanlycongthuc/timkiem" method="GET" class="form-inline">
+                        <div style="display: flex;">
+                            <div class="form-group mr-4">
+                                <input type="text" name="tukhoa" placeholder="Từ khóa">
+                            </div>
+                            <button style="margin-left: 8px;" type="submit" class="btn-bt btn-40h">Tìm kiếm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col chuyendoi">
+                <div class="mt-4">
+                    <h2>Thêm Công Thức</h2>
+                    <form action="/quanly/quanlycongthuc/them" method="POST">
+                        <div class="form-group">
+                            <label for="id_sp"><p>Sản phẩm:</p></label>
+                            <select id="id_sp" name="id_sp">
+                                <% sanpham.forEach(function(sp) { %>
+                                <option value="<%= sp.ID_SP %>">
+                                    <%= sp.TEN_SP %>
+                                </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_nl"><p>Nguyên liệu:</p></label>
+                            <select id="id_nl" name="id_nl">
+                                <% nguyenlieu.forEach(function(nl) { %>
+                                <option value="<%= nl.ID_NL %>">
+                                    <%= nl.TEN_NL %>
+                                </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_kich_thuoc"><p>Kích thước:</p></label>
+                            <select id="id_kich_thuoc" name="id_kich_thuoc">
+                                <% kichthuoc.forEach(function(kt) { %>
+                                <option value="<%= kt.ID_KICH_THUOC %>">
+                                    <%= kt.TEN_KICH_THUOC %>
+                                </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dung_tich_nl_can"><p>Dung Tích Nguyên Liệu Cần:</p></label>
+                            <input type="text" id="dung_tich_nl_can" name="dung_tich_nl_can" style="width: 200px;">
+                            <button type="submit" class="btn-bt">Thêm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Danh Sách Công Thức -->
+        <div class="mt-4">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Danh Sách Công Thức</h2>
+                <a href="/quanly/quanlycongthuc?sapxep=ten" class="btn btn-secondary">Sắp xếp theo tên sản phẩm</a>
+            </div>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Nguyên liệu</th>
+                        <th>Kích thước</th>
+                        <th>Dung tích nguyên liệu cần</th>
+                        <th>Hành động</th> <!-- Cột hành động -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <% congthuc.forEach(function(item) { %>
+                    <form action="/quanly/quanlycongthuc/sua/<%= item.ID_SP %>/<%= item.ID_NL %>/<%= item.ID_KICH_THUOC %>" method="POST">
+                        <tr>
+                            <td>
+                                <input type="text" name="id_sp" value="<%= item.TEN_SP %>" readonly style="width: 150px;">
+                            </td>
+                            <td>
+                                <input type="text" name="id_nl" value="<%= item.TEN_NL %>" readonly style="width: 150px;">
+                            </td>
+                            <td>
+                                <input type="text" name="id_kich_thuoc" value="<%= item.TEN_KICH_THUOC %>" readonly style="width: 150px;">
+                            </td>
+                            <td>
+                                <input type="text" name="dung_tich_nl_can" value="<%= item.DUNG_TICH_NL_CAN %>" style="width: 150px;">
+                            </td>
+                            <td>
+                                <button type="submit" class="btn-bt">Sửa</button>
+                            </td>
+                        </tr>
+                    </form>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+    <%- include('../partials/ql_trangcuoi') %>

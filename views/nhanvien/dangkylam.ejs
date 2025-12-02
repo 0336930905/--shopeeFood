@@ -1,0 +1,141 @@
+<%- include('../partials/nv_trangdau') %>
+<style>
+  .table-wrapper {
+    overflow-x: auto;
+    max-width: 100%; /* Giới hạn chiều rộng của bảng */
+}
+
+.table-bordered {
+    width: 100%;
+    table-layout: fixed; /* Cố định chiều rộng các cột */
+    word-wrap: break-word; /* Để văn bản tự động xuống dòng trong cột */
+}
+
+</style>
+<div class="container">
+<div class="row">
+  <div class="col">
+    <h2 class="mt-4">Gợi ý lịch làm cho quản lý </h2>
+  </div>
+  <div class="col chuyendoi">
+    <div class="mt-4">
+      <h2 class="mt-4">Chọn khoảng thời gian</h2>
+      <form action="/nhanvien/dangkylam" method="POST" style="margin: inherit;">
+        <div class="display-flex">
+          <div class="form-group">
+            <% if (ngayList.length > 0) { %>
+              <select name="id_n" class="">
+                <% 
+                  ngayList.forEach(function(ngay) { 
+                %>
+                  <option value="<%= ngay.ID_N %>">
+                    <%= ngay.NGAY_BD.toLocaleDateString('vi-VN') %> - <%= ngay.NGAY_KT.toLocaleDateString('vi-VN') %>
+                  </option>
+                <% 
+                  }); 
+                %>
+              </select>
+              <button type="submit" class="btn-bt">Chọn</button>
+            <% } else { %>
+              <div class="alert alert-warning">
+                Không có ngày đăng ký làm nào có sẵn.
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </form>
+      
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <% dangKyNgayLamList.forEach(function(dangKyNgayLam) { %>
+        <% if (dangKyNgayLam.ID_NV === idNhanVien) { %>
+          <% ngayList.forEach(function(ngay) { %>
+            <% if (ngay.ID_N === dangKyNgayLam.ID_N) { %>
+                <form  id="myForm_<%= dangKyNgayLam.ID_DKNL %>" action="/nhanvien/dangkylam/capnhat" method="POST">
+                  <h3>Ngày: <%= new Date(ngay.NGAY_BD).toLocaleDateString('vi-VN') %> - <%= new Date(ngay.NGAY_KT).toLocaleDateString('vi-VN') %></h3>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Ngày</th>
+                        <% var count = 0; %>
+                        <% for (var date = new Date(ngay.NGAY_BD); date <= ngay.NGAY_KT; date.setDate(date.getDate() + 1)) { %>
+                          <% count++; %>
+                          <th><%= date.toLocaleDateString('vi-VN') %></th>
+                        <% } %>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Ca 1</td>
+                        <% for (var i = 0; i < count; i++) { %>
+                          <td><input type="checkbox" name="NGAYDK[]" value="Ca 1_<%= i %>"></td>
+                        <% } %>
+                      </tr>
+                      <tr>
+                        <td>Ca 2</td>
+                        <% for (var i = 0; i < count; i++) { %>
+                          <td><input type="checkbox" name="NGAYDK[]" value="Ca 2_<%= i %>"></td>
+                        <% } %>
+                      </tr>
+                      <tr>
+                        <td>Ca 3</td>
+                        <% for (var i = 0; i < count; i++) { %>
+                          <td><input type="checkbox" name="NGAYDK[]" value="Ca 3_<%= i %>"></td>
+                        <% } %>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <input type="hidden" name="id_n" value="<%= dangKyNgayLam.ID_N %>">
+                  <input type="hidden" name="idN" value="<%= dangKyNgayLam.ID_NV %>">
+                  <button type="submit" class="btn-bt update-button show-form-button" data-form-id="anlichlam_<%= dangKyNgayLam.ID_DKNL %>">Cập nhật</button>
+                </form>
+            <% } %>
+          <% }); %>
+        <% } %>
+      <% }); %>
+      <h2>danh sách lịch làm đã gợi ý</h2>
+      <% dangKyNgayLamList.forEach((dangKyNgayLam) => { %>
+        <% if (dangKyNgayLam.ID_NV === idNhanVien) { %>
+          <% ngayList.forEach(function(ngay) { %>
+            <% if (ngay.ID_N === dangKyNgayLam.ID_N) { %>
+              <form action="/nhanvien/xoalichlam/<%= dangKyNgayLam.ID_DKNL %>" method="post" class="anlichlam_<%= dangKyNgayLam.ID_DKNL %>">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <% for (var date = new Date(ngay.NGAY_BD); date <= ngay.NGAY_KT; date.setDate(date.getDate() + 1)) { %>
+                        <th><%= date.toLocaleDateString('vi-VN') %></th>
+                      <% } %>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <% 
+                        const ngayDKs = [dangKyNgayLam.NGAYDK_1, dangKyNgayLam.NGAYDK_2, dangKyNgayLam.NGAYDK_3, dangKyNgayLam.NGAYDK_4, dangKyNgayLam.NGAYDK_5, dangKyNgayLam.NGAYDK_6, dangKyNgayLam.NGAYDK_7];
+                        ngayDKs.forEach((ngayDK, index) => { 
+                          if (ngayDK) { %>
+                            <td><%= ngayDK %></td>
+                          <% } else { %>
+                            <td></td>
+                          <% } 
+                        });
+                      %>
+                    </tr>
+                  </tbody>
+                </table>
+                <button type="submit" class="btn-xoa" data-form-id="anlichlam_<%= dangKyNgayLam.ID_DKNL %>">Xóa</button>
+              </form>
+            <% } %>
+          <% }); %>
+        <% } %>
+      <% }); %>
+      
+        
+    </div>
+  </div>
+</div>
+</div>
+
+
+<%- include('../partials/nv_trangcuoi') %>

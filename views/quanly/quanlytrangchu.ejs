@@ -1,0 +1,41 @@
+<%- include('../partials/ql_trangdau') %>
+<style>
+  .thumbnail {
+    width: 200px; /* Điều chỉnh kích thước ảnh */
+    height: 200px; /* Chiều cao cố định */
+    object-fit: cover; /* Đảm bảo ảnh không bị méo */
+    border-radius: 5px;
+  }
+</style>
+
+<div class="container">
+  <div class="row">
+    <div class="mt-4">
+      <h1 class="mb-4">Quản lý Trang Chủ</h1>
+      <% let currentIDQLTC = null; %>
+      <% trangChuData.forEach(function(item) { %>
+        <% if (currentIDQLTC !== item.ID_QLTC) { %>
+          <% if (currentIDQLTC !== null) { %>
+          <% } %>
+            <% currentIDQLTC = item.ID_QLTC; %>
+        <% } %>
+        <div class="mb-3 col-8">
+          <form action="/quanly/quanlytrangchu/capnhat/<%= item.ID_TC %>" method="POST" enctype="multipart/form-data">
+            <input value="<%= item.ID_TC %>" style="display: none;">
+          <div style="display: flex;">
+            <img src="/uploads/<%= item.ANH_TC %>" alt="Ảnh Trang Chủ" class="thumbnail">
+             <input type="file" name="ANH_TC">
+            <label for="mota">Mô tả:</label>
+            <textarea class="form-control" id="mota" name="mota" rows="3"><%= item.MOTA_TC %></textarea>
+            <button class="btn-bt">Cập nhật</button>
+          </div>
+        </form>
+        </div>
+      <% }); %>
+      </div> <!-- Kết thúc nhóm cuối cùng -->
+    </div>
+  </div>
+
+
+
+<%- include('../partials/ql_trangcuoi') %>

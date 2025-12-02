@@ -1,0 +1,281 @@
+<%- include('../partials/nv_trangdau') %>
+    <style>
+        .container {
+            margin-bottom: 374px;
+        }
+
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0);
+            /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            /* Could be more or less, depending on screen size */
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+    <div class="container">
+        <div class="row">
+            <h2 class="mb-4">Danh sách hóa đơn chờ xác nhận</h2>
+            <h5>Chú thích</h5>
+                <p style="color: #333; display: contents;">- Đơn đặt trước:&nbsp;<div style="background-color: #65baa9; width: 5px; margin-left: 32px;">&nbsp;</div></p>
+                <p style="color: #333; display: contents;">- Đơn chuyển khoản:&nbsp;<div style="background-color: #9d0000; width: 5px;">&nbsp;</div></p>
+            <% if (hoadons.length> 0) { %>
+                <% hoadons.forEach(hoadon=> { %>
+                    <div class="card mb-3">
+                        <div class="">
+                            <div class="table--hd mt-4">
+                                <div class="table--hd__title 
+                                <% if (hoadon.LOAI_TT === 'Chuyển khoản') { %>
+                                    trangthai-huy
+                                  <% } else if (hoadon.LOAI_TT === 'Đặt trước') { %>
+                                    trangthai-xac-nhan
+                                  <% }%>
+                                ">
+                                    Ngày lập:&nbsp;<%= new Date(hoadon.NGAYLAP_HD).toLocaleDateString('vi-VN') %>
+                                        <span style="margin-left: auto;">
+                                            ID hóa đơn: <%= hoadon.ID_HD %>
+                                        </span>
+                                </div>
+                                <div class="table--hd__data">
+                                    <div class="table--hd__right">
+                                        <div class="item--hd">
+                                            ID khách hàng:
+                                        </div>
+                                        <div class="item--hd">
+                                            Loại thanh toán:
+                                        </div>
+                                        <div class="item--hd">
+                                            Trạng thái thanh toán:
+                                        </div>
+                                        <div class="item--hd">
+                                            Ghi chú:
+                                        </div>
+                                        <div class="item--hd">
+                                            Chi tiết sản phẩm:
+                                        </div>
+                                        <div class="item--hd">
+                                            Tổng hóa đơn:
+                                        </div>
+                                        <div class="item--hd">
+                                            Thao tác:
+                                        </div>
+                                    </div>
+                                    <div class="table--hd__left">
+                                        <div class="item--hd">
+                                            <%= hoadon.ID_KH %>
+                                        </div>
+                                        <div class="item--hd">
+                                            <%= hoadon.LOAI_TT %>
+                                        </div>
+                                        <div class="item--hd">
+                                            <%= hoadon.TRANGTHAI_TT %>
+                                        </div>
+                                        <div class="item--hd">
+                                            <% hoadon.products.forEach(product => { %>
+                                                  <%= product.GHICHU %> 
+                                              <% }) %>
+                                        </div>
+                                        <div class="item--hd">
+                                            <% hoadon.products.forEach(product=> { %>
+                                                <%= product.TEN_SP %> - Số lượng: <%= product.SOLUONG %>, Kích thước:
+                                                        <%= product.TEN_KICH_THUOC %>
+                                                            <% }); %>
+                                        </div>
+                                        <div class="item--hd">
+                                            <% function formatCurrency(amount) { return new Intl.NumberFormat('vi-VN', { style: 'decimal' ,
+                                            currency: 'VND' }).format(amount); } %>
+                                            <%= formatCurrency(hoadon.TONG_HD) %>
+                                        </div>
+                                        <div class="item--hd display-flex">
+                                            <% if (hoadon.TRANGTHAI_TT != 'Đã hủy') { %>
+                                            <form action="/nhanvien/xacnhandon/<%= hoadon.ID_HD %>" method="POST"
+                                                class="me-2">
+                                                <button type="submit" class="btn-bt">Xác nhận đơn</button>
+                                                <% } %>
+                                            </form>
+                                            <button type="button" class="btn-xoa"
+                                                onclick="showCancelModal(<%= hoadon.ID_HD %>)">Xác nhận hủy đơn</button>
+                                        </div>
+                                    </div>
+                                    <!-- Modal hủy đơn -->
+                                    <div id="cancelModal<%= hoadon.ID_HD %>" class="modal" style="display: none;">
+                                        <div class="modal-content">
+                                            <span class="close"
+                                                onclick="hideCancelModal(<%= hoadon.ID_HD %>)">&times;</span>
+                                            <h2>Hủy đơn hàng</h2>
+                                            <form action="/nhanvien/huydon/<%= hoadon.ID_HD %>" method="POST">
+                                                <div class="mb-3">
+                                                    <label for="reason" style="color: #333;">Lý do hủy:</label>
+                                                    <textarea class="form-control" id="reason" name="reason" rows="3"
+                                                        required></textarea>
+                                                </div>
+                                                <input type="hidden" name="hoadon_id" value="<%= hoadon.ID_HD %>">
+                                                <button type="submit" class="btn-bt">Xác nhận hủy đơn</button>
+                                                <button type="button" class="btn-xoa"
+                                                    onclick="hideCancelModal(<%= hoadon.ID_HD %>)">Hủy</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+
+                        <% } else { %>
+                            <div class="alert alert-info mt-4">
+                                Không có đơn hàng mới.
+                            </div>
+                            <% } %>
+        </div>
+
+    </div>
+    <script>
+        function showCancelModal(id) {
+            document.getElementById('cancelModal' + id).style.display = 'block';
+        }
+
+        function hideCancelModal(id) {
+            document.getElementById('cancelModal' + id).style.display = 'none';
+        }
+
+        function startOrderTimer(orderId, orderType) {
+            // Nếu là đơn chuyển khoản thì không cần timer
+            if (orderType === 'Chuyển khoản') {
+                return;
+            }
+
+            // Set timeout 5 phút
+            setTimeout(async () => {
+                try {
+                    const response = await fetch(`/nhanvien/tu_choi_don_auto/${orderId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'same-origin'
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Reload trang sau khi từ chối đơn thành công
+                        window.location.reload();
+                    }
+                } catch (error) {
+                    console.error('Lỗi khi tự động từ chối đơn:', error);
+                }
+            }, 300000); // 300000ms = 5 phút
+        }
+
+        // Khởi tạo timer cho mỗi đơn hàng khi trang load
+        document.addEventListener('DOMContentLoaded', function() {
+            const orders = document.querySelectorAll('.card.mb-3');
+            orders.forEach(order => {
+                const orderId = order.querySelector('[id^="cancelModal"]')?.id.replace('cancelModal', '');
+                const orderType = order.querySelector('.item--hd:nth-child(2)')?.textContent.trim();
+                
+                if (orderId) {
+                    startOrderTimer(orderId, orderType);
+                }
+            });
+        });
+
+        // Thêm đồng hồ đếm ngược cho mỗi đơn hàng
+        function addCountdown(orderElement, orderType) {
+            if (orderType === 'Chuyển khoản') {
+                return;
+            }
+
+            const countdownDiv = document.createElement('div');
+            countdownDiv.className = 'countdown-timer';
+            countdownDiv.innerHTML = 'Thời gian còn lại: <span class="time-remaining">05:00</span>';
+            
+            // Chèn countdown vào đơn hàng
+            orderElement.querySelector('.table--hd__title').appendChild(countdownDiv);
+
+            let timeLeft = 300; // 5 phút
+            const timeDisplay = countdownDiv.querySelector('.time-remaining');
+
+            const timer = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                
+                timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 60) { // Còn 1 phút
+                    timeDisplay.style.color = 'red';
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                }
+                
+                timeLeft--;
+            }, 1000);
+        }
+
+        // Thêm style cho countdown
+        const style = document.createElement('style');
+        style.textContent = `
+            .countdown-timer {
+                float: right;
+                margin-left: 15px;
+                font-size: 0.9em;
+            }
+            .time-remaining {
+                font-weight: bold;
+                color: #333;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Khởi tạo countdown cho mỗi đơn hàng
+        document.addEventListener('DOMContentLoaded', function() {
+            const orders = document.querySelectorAll('.card.mb-3');
+            orders.forEach(order => {
+                const orderType = order.querySelector('.item--hd:nth-child(2)')?.textContent.trim();
+                addCountdown(order, orderType);
+            });
+        });
+    </script>
+
+    <%- include('../partials/nv_trangcuoi') %>

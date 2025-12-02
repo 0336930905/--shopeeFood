@@ -1,0 +1,146 @@
+<%- include('../partials/ql_trangdau') %>
+
+    <style>
+        .container {
+            margin-bottom: 374px;
+        }
+    </style>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <h2 class="mt-4">Thông báo</h2>
+        
+                <% if (nguyenlieu.length > 0) { %>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Tên nguyên liệu</th>
+                            <th>Dung tích</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% nguyenlieu.forEach(item => { %>
+                        <tr>
+                            <td>
+                                <input type="text" name="ten_nl" value="<%= item.TEN_NL %>" readonly style="width: 110px;">
+                            </td>
+                            <td>
+                                <input type="text" name="dung_tich_nl" value="<%= item.DUNG_TICH_NL %>" readonly style="width: 110px;">
+                            </td>
+                            <td>
+                                <form action="/quanly/quanlynguyenlieu">
+                                    <button type="submit" class="btn-bt">Đến thêm nguyên liệu</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+                <% } %>
+        
+                <% yeucauthayca.forEach(yctc => { %>
+                <% if (yctc.XACNHAN_NVTC == 1) { %>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Ngày Làm</th>
+                            <th>Nhân Viên Hiện Tại</th>
+                            <th>Nhân Viên Mới</th>
+                            <th>Mô Tả</th>
+                            <th>Xác Nhận NV</th>
+                            <th>Ca làm muốn thay</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="text" name="ngay_lam" value="<%= yctc.NGAY_L.toISOString().split('T')[0] %>" readonly style="width: 150px;">
+                            </td>
+                            <td>
+                                <input type="hidden" name="nv_yeucau" value="<%= yctc.NHANVIEN_YEUCAU %>">
+                                <input type="text" readonly value="<%= yctc.NV_REQUEST_NAME %>" style="width: 150px;">
+                            </td>
+                            <td>
+                                <input type="hidden" name="nv_thayca" value="<%= yctc.NHANVIEN_THAYCA %>">
+                                <input type="text" readonly value="<%= yctc.NV_REPLACE_NAME %>" style="width: 150px;">
+                            </td>
+                            <td>
+                                <input type="text" name="mota" value="<%= yctc.MOTA %>" readonly style="width: 150px;">
+                            </td>
+                            <td>
+                                <input type="hidden" name="xacnhan_nv" value="<%= yctc.XACNHAN_NVTC %>">
+                                <input type="text" value="Đã xác nhận" readonly style="width: 150px;">
+                            </td>
+                            <td>
+                                <input type="text" name="calam_muonthay" value="<%= yctc.CALAMMUONTHAY %>" readonly style="width: 150px;">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="display-flex">
+                    <form action="/quanly/yeucaudoica/xacnhan" method="POST">
+                        <input type="hidden" name="id" value="<%= yctc.ID_YCTC %>">
+                        <button type="submit" class="btn-bt">Xác nhận</button>
+                    </form>
+        
+                    <form action="/quanly/yeucaudoica/huy" method="POST">
+                        <input type="hidden" name="id" value="<%= yctc.ID_YCTC %>">
+                        <button type="submit" class="btn-xoa">Từ chối</button>
+                    </form>
+                </div>
+                <% } %>
+                <% }) %>
+                <% xinnghiphep.forEach(xnp => { %>
+                    <% if (xnp.XACNHAN_QL == 0) { %>
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Ngày Làm</th>
+                                <th>Nhân Viên</th>
+                                <th>Mô Tả</th>
+                                <th>Ca làm muốn thay</th>
+                                <th>Xác Nhận Quản Lý</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="text" name="ngay_lam" value="<%= xnp.NGAY_L.toISOString().split('T')[0] %>" readonly style="width: 150px;">
+                                </td>
+                                <td>
+                                    <input type="hidden" name="id_nv" value="<%= xnp.ID_NV %>">
+                                    <input type="text" readonly value="<%= xnp.HOTEN_NV %>" style="width: 150px;">
+                                </td>
+                                <td>
+                                    <input type="text" name="mota" value="<%= xnp.MOTA %>" readonly style="width: 150px;">
+                                </td>
+                                <td>
+                                    <input type="text" name="calam_muonthay" value="<%= xnp.CALAMMUONNGHI %>" readonly style="width: 150px;">
+                                </td>
+                                <td>
+                                    <input type="hidden" name="xacnhan_ql" value="<%= xnp.XACNHAN_QL %>">
+                                    <input type="text" value="Chưa xác nhận" readonly style="width: 150px;">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="display-flex">
+                        <form action="/quanly/xinnghiphep/xacnhan" method="POST">
+                            <input type="hidden" name="id" value="<%= xnp.ID_XNP %>">
+                            <button type="submit" class="btn-bt">Xác nhận</button>
+                        </form>
+                
+                        <form action="/quanly/xinnghiphep/huy" method="POST">
+                            <input type="hidden" name="id" value="<%= xnp.ID_XNP %>">
+                            <button type="submit" class="btn-xoa">Từ chối</button>
+                        </form>
+                    </div>
+                    <% } %>
+                <% }) %>
+            </div>
+        </div>
+        
+    </body>
+    <%- include('../partials/ql_trangcuoi') %>
