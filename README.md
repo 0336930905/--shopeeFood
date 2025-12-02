@@ -1,2 +1,2 @@
 # shopeeFood
-cho phép khách hàng thực hiện đặt nước uống và thanh toán - quản lý nguyên liệu + quản lý nhân viên 
+cho phép khách hàng thực hiện đặt nước uống và thanh toán - gồm 3 người dùng chính (nhân viên - quản lý - khách hàng )
